@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مفاتيح الخامسة - رحلة 30 تحدي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b132b;
+            --card-bg: #1c2541;
+            --primary: #480ca8;
+            --accent: #f72585;
+            --gold: #ffb703;
+            --success: #06d6a0;
+            --danger: #e63946;
+            --text: #edf2f4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 12px; }
+        .container { width: 100%; max-width: 1100px; }
+        
+        .card { background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); text-align: center; }
+        .view { display: none; }
+        .view.active { display: block; }
+
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 2px solid #3a506b; background: #0b132b; color: white; font-size: 1.1rem; margin: 10px 0; text-align: center; transition: 0.3s; }
+        input:focus { border-color: var(--accent); outline: none; }
+        
+        button { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-primary { background: linear-gradient(135deg, #7209b7, #4361ee); color: white; }
+        .btn-gold { background: linear-gradient(135deg, #ffb703, #fb8500); color: #000; }
+        .btn-submit { background: var(--success); color: #000; font-size: 1.2rem; }
+        
+        .header-bar { display: flex; justify-content: space-between; align-items: center; background: #1c2541; padding: 15px 25px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #3a506b; }
+        .timer { font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+
+        .doors-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; margin: 20px 0; }
+        .door { height: 50px; background: #3a506b; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: bold; border: 2px solid #5bc0be; transition: 0.3s; }
+        .leaderboard-box { margin-top: 14px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px; text-align: right; }
+        .leaderboard-title { font-size: 1rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); margin-bottom: 6px; font-size: 0.95rem; }
+        .door.active { border-color: var(--gold); box-shadow: 0 0 10px var(--gold); transform: scale(1.1); }
+        .door.opened { background: var(--success); border-color: var(--success); color: black; }
+
+        #lockout-alert { display: none; margin-top: 15px; padding: 10px; background: rgba(230, 57, 70, 0.2); border: 1px solid var(--danger); border-radius: 8px; color: var(--danger); font-weight: bold; }
+        
+        .q-image { max-width: 100%; max-height: 250px; border-radius: 12px; margin: 15px 0; border: 2px solid #5bc0be; display: none; }
+        .task-badge { display: inline-block; background: var(--accent); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; }
+
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .card { padding: 16px; }
+            .header-bar { flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 16px; }
+            .doors-grid { grid-template-columns: repeat(6, 1fr); }
+            .timer { font-size: 1.4rem; }
+            input, button { font-size: 1rem; padding: 12px; }
+        }
+
+        @media (max-width: 480px) {
+            .doors-grid { grid-template-columns: repeat(5, 1fr); }
+            .door { height: 42px; font-size: 0.9rem; }
+            .leaderboard-item { font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="start-view" class="view active card">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">🔑 مفاتيح الخامسة</h1>
+        <p style="color: #90e0ef; margin-bottom: 20px;">أدخل رمز الدخول المخصص من المشرف واسم الفريق للبدء</p>
+        
+        <input type="text" id="team-name" placeholder="أدخل اسم الفريق..." />
+        <input type="password" id="access-code" placeholder="رمز الدخول (PIN)..." />
+        
+        <button class="btn-primary" onclick="startGame()">انطلاق التحدي 🚀</button>
+        <div id="start-message" style="margin-top:12px; color:#90e0ef;">أدخل الفريق ورمز الدخول ثم انتظر المقدم لبدء الجولة.</div>
+    </div>
+
+    <div id="game-view" class="view">
+        <div class="header-bar">
+            <div>الفريق: <b id="disp-team" style="color: #5bc0be;">-</b></div>
+            <div class="timer" id="timer-display">50:00</div>
+            <div>النقاط: <b id="score-display" style="color: var(--gold);">0</b></div>
+        </div>
+
+        <div class="doors-grid" id="doors-container"></div>
+        <div class="leaderboard-box" id="leaderboard-preview"></div>
+
+        <div class="card">
+            <span id="type-badge" class="task-badge" style="display:none;">مهمة</span>
+            <h3 id="door-number" style="color: #90e0ef;">الباب (1)</h3>
+            
+            <img id="question-img" class="q-image" src="" alt="صورة السؤال">
+
+            <p id="question-text" style="font-size: 1.2rem; margin: 15px 0; line-height: 1.6;">جاري تحميل التحدي...</p>
+            <div id="answer-reveal" style="display:none; margin-top:8px; padding:10px; border-radius:10px; background:rgba(255,183,3,0.15); color:var(--gold); font-weight:700; text-align:right;">الجواب الصحيح: -</div>
+
+            <div id="answer-box">
+                <input type="text" id="user-answer" placeholder="اكتب إجابتك هنا..." autocomplete="off">
+                <div id="options-container" style="display:none; margin-top:12px; gap:10px; flex-direction:column;"></div>
+                <button class="btn-submit" id="submit-btn" onclick="checkAnswer()">تأكيد الإجابة 📩</button>
+            </div>
+
+            <button id="golden-key-btn" class="btn-gold" style="margin-top: 15px;" onclick="useGoldenKey()">🔑 استخدام المفتاح الذهبي (150 نقطة)</button>
+            <div id="lockout-alert">إجابة خاطئة! تم حظر المحاولات لمدة <span id="lock-timer">20</span> ثانية.</div>
+        </div>
+    </div>
+
+    <div id="results-view" class="view card">
+        <h1>🏆 ختام المسابقة!</h1>
+        <p style="font-size: 1.2rem; margin-top: 10px;">نتيجة فريق <b id="final-team-name"></b></p>
+        <div style="font-size: 3.5rem; color: var(--gold); margin: 20px 0;" id="final-score">0</div>
+        <p style="margin-bottom: 20px;">نقطة إجمالية</p>
+        <div class="leaderboard-box" id="all-results-list"></div>
+        <button class="btn-primary" onclick="location.reload()">لعبة جديدة 🔄</button>
+    </div>
+</div>
+
+<script>
+    // رمز الدخول المفروض من قبل المشرف
+    const CORRECT_PIN = "2026";
+    const ROUND_STATE_KEY = 'mq-round-state';
+    const RESULTS_KEY = 'mq-team-results';
+    const ROOM_CODE_KEY = 'mq-room-code';
+    const ANSWER_REVEAL_KEY = 'mq-answer-reveal';
+    const ROOM_RESULTS_PREFIX = 'mq-room-results-';
+    const DEFAULT_ROOM_CODE = '2026';
+    const DEFAULT_ROOM_CODE = '2026';
+
+    // بنك الأسئلة الـ 60
+    const originalQuestions = [
+        { q: "ما هي السورة الوحيدة في القرآن الكريم التي تحتوي على بسملتين؟", answers: ["النمل", "سورة النمل"] },
+        { q: "من هو الصحابي الذي اهتز لوفاته عرش الرحمن؟", answers: ["سعد بن معاذ", "سعد"] },
+        { q: "ما هي أقدم عاصمة مأهولة بالسكان في التاريخ؟", answers: ["دمشق", "مدينة دمشق"] },
+        { q: "من هو الصحابي الملقب بـ 'ترجمان القرآن'؟", answers: ["عبدالله بن عباس", "عبد الله بن عباس", "ابن عباس"] },
+        { q: "كم عدد سور القرآن الكريم؟", answers: ["114", "١١٤"] },
+        { q: "شيء يملك أسناناً كثيرة ولكنه لا يعض، فما هو؟", answers: ["المشط", "مشط"] },
+        { q: "شيء يأكل ولا يشبع، وإذا شرب الماء يموت، فما هو؟", answers: ["النار", "نار"] },
+        { q: "ما هو الشيء الذي كلما أخذت منه كِبَر؟", answers: ["الحفرة", "حفرة"] },
+        { q: "أنا أتحرك بلا أرجل، وأبكي بلا أعين، فمن أكون؟", answers: ["السحاب", "سحاب", "الغيوم", "غيمة"] },
+        { q: "ما هو الشيء الذي يمشي ويقف وليس له أرجُل؟", answers: ["الساعة", "ساعة"] },
+        { img: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=500", q: "ما اسم هذا المعلم الإسلامي الموضح في الصورة؟", answers: ["المسجد النبوي", "مسجد النبوي", "الروضة الشريفة"] },
+        { img: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=500", q: "ما اسم التضاريس الطبيعية الظاهرة في الصورة؟", answers: ["صحراء", "الصحراء", "كثبان رملية", "الكثبان الرملية"] },
+        { img: "https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=500", q: "ما اسم هذا الكوكب المتميز بالحلقات؟", answers: ["زحل", "كوكب زحل"] },
+        { img: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=500", q: "ما اسم المعلم التاريخي الشهير الظاهر في الصورة؟", answers: ["تاج محل", "تاج المهل"] },
+        { img: "https://images.unsplash.com/photo-1512632578888-169bbbc64f33?w=500", q: "في أي مدينة يقع هذا البرج الشهير (برج خليفة)؟", answers: ["دبي", "مدينة دبي"] },
+        { type: "مهمة حركية 🏃‍♂️", q: "قف فوراً مع جميع أعضاء فريقك وقوموا بـ 10 قفزات رياضية متتالية، ثم اكتب كلمة (تم) بالأسفل!", answers: ["تم", "تمت", "تم التنفيذ"] },
+        { type: "تحدي السرعة ⚡", q: "رتبوا حروف كلمة (م ف ت ا ح) بأيديكم على ورقة خلال 15 ثانية، ثم اكتب الكود المكون من الحرفين الأخيرين (اح)!", answers: ["اح"] },
+        { type: "مهمة أدبية 🎙️", q: "قم بإلقاء بيت شعر عربي بصوت مرتفع أمام القاعة، ثم اكتب كلمة (تم) لتجاوز الباب!", answers: ["تم", "تمت"] },
+        { type: "تحدي الذاكرة 🧠", q: "اذكروا 5 أشياء باللون الأزرق داخل القاعة، ثم اكتبوا عدد الأشياء (5) في مربع الإجابة!", answers: ["5", "٥", "خمسة"] },
+        { type: "مهمة تفاعلية 🏗️", q: "اصنعوا برجا بـ 3 أقلام متوازنة فوق بعضها لمدة 5 ثوانٍ، واكتبوا (نجحنا) بالأسفل!", answers: ["نجحنا", "تم", "نجاح"] },
+        { q: "ما هو العضو الوحيد في جسم الإنسان الذي يعيد تنمية نفسه إذا قطع جزء منه؟", answers: ["الكبد", "كبد"] },
+        { q: "ما هي الدولة الوحيدة التي تقع بالكامل داخل دولة أخرى؟", answers: ["الفاتيكان", "دولة الفاتيكان", "سان مارينو"] },
+        { q: "ما هو أطول نهر في العالم؟", answers: ["النيل", "نهر النيل"] },
+        { q: "ما هو أثقل غاز موجود في الغلاف الجوي؟", answers: ["الزينون", "زينون"] },
+        { q: "ما هي أسرع الكائنات الحية برّاً على الإطلاق؟", answers: ["الفهد", "فهد"] },
+        { q: "كلمة من 5 حروف، إذا حذفنا أول حرفين أصبحت اسم حيوان مفترس (قط)، فما هي الكلمة الأصلية؟", answers: ["قاطرة", "القاطرة"] },
+        { q: "ما هو الشيء الذي يربط بين شخصين ولكنه يلمس شخصاً واحداً فقط؟", answers: ["خاتم الزفاف", "الخاتم", "خاتم"] },
+        { q: "له وجه واحد ولا يملك لساناً، ويخبرك بالوقت طوال اليوم فما هو؟", answers: ["الساعة", "ساعة", "المنبه"] },
+        { q: "ما هي أطول كلمة في القرآن الكريم؟", answers: ["فأسقيناكموه", "فاسقيناكموه"] },
+        { q: "السؤال الأخير: اكتب عبارة (مفاتيح الخامسة) للانطلاق للنتيجة النهائية!", answers: ["مفاتيح الخامسة"] },
+        { q: "ما اسم الملكة التي حكمت مصر القديمة في عصرها الذهبي؟", answers: ["حتشبسوت", "حتشبسوت"] },
+        { q: "ما اسم أول من أسلم من النساء؟", answers: ["خديجة", "خديجة بنت خويلد"] },
+        { q: "ما اسم القمر الصناعي الذي أطلقته الأمم المتحدة للاتصالات؟", answers: ["ساتل", "satellite"] },
+        { q: "ما هو أكبر قارة على سطح الأرض؟", answers: ["آسيا", "اسيا"] },
+        { q: "ما اسم الحيوان الذي يُعرف بملك الصحراء؟", answers: ["الأسد", "اسد"] },
+        { q: "ما هي الكلمة التي تبدأ بـ 'م' وتنتهي بـ 'ر' وتدل على شيء يطير؟", answers: ["مطار", "مطار"] },
+        { q: "ما اسم أطول نهر في أفريقيا؟", answers: ["النيل", "نهر النيل"] },
+        { q: "ما هو أكثر عنصر شيوعاً في الغلاف الجوي؟", answers: ["النيتروجين", "نيتروجين"] },
+        { q: "ما اسم الشهر الذي يبدأ فيه رمضان؟", answers: ["رمضان"] },
+        { q: "ما هي أول سورة نزلت في القرآن؟", answers: ["العلق", "سورة العلق"] },
+        { q: "ما اسم الكتاب المقدس عند المسلمين؟", answers: ["القرآن", "القرآن الكريم"] },
+        { q: "ما هو أصغر كوكب في المجموعة الشمسية؟", answers: ["عطارد", "بلوتو"] },
+        { q: "ما هي المادة التي يتكون منها الذهب؟", answers: ["ذهب", "الذهب"] },
+        { q: "ما اسم أول جامعة في الإسلام؟", answers: ["القاهرة", "جامعة القرويين"] },
+        { q: "ما اسم الحيوان الذي يُعرف باسم 'صديقي البحري'؟", answers: ["الدلفين", "دلفين"] },
+        { q: "ما اسم العلم الذي يدرس الكائنات الحية؟", answers: ["الأحياء", "علم الأحياء"] },
+        { q: "ما اسم أشهر فاكهة في الصيف؟", answers: ["الشمام", "بطيخ"] },
+        { q: "ما هو اسم المدينة التي سميت على اسم النبي؟", answers: ["المدينة المنورة", "مدينة الرسول"] },
+        { q: "ما اسم أول نبي ذكر في القرآن؟", inputMode: "options", options: ["آدم", "نوح", "إبراهيم", "موسى"], answers: ["آدم"] },
+        { q: "ما اسم أعلى جبل في العالم؟", inputMode: "options", options: ["إيفرست", "كليمنجارو", "كانغشينجوا", "فوجي"], answers: ["إيفرست"] },
+        { q: "ما اسم الحيوان الذي يمكن أن يتغير لونه حسب البيئة؟", inputMode: "options", options: ["الحرباء", "الأسد", "الثعلب", "الزرافة"], answers: ["الحرباء"] },
+        { q: "ما اسم أول جامعة أسست في العالم الإسلامي؟", inputMode: "options", options: ["القرويين", "الأزهر", "القاهرة", "اليرموك"], answers: ["القرويين"] },
+        { q: "ما اسم أكبر محيط على الأرض؟", inputMode: "options", options: ["المحيط الهادئ", "المحيط الأطلسي", "المحيط الهندي", "المحيط المتجمد الشمالي"], answers: ["المحيط الهادئ"] },
+        { q: "ما اسم العضو المسؤول عن ضخ الدم في الجسم؟", inputMode: "options", options: ["القلب", "الكبد", "الرئة", "الكلى"], answers: ["القلب"] },
+        { q: "ما اسم أشهر شاعر عربي معاصر؟", inputMode: "options", options: ["محمود درويش", "نزار قباني", "أدونيس", "صلاح عبد الصبور"], answers: ["محمود درويش"] },
+        { q: "ما اسم أول كوكب في المجموعة الشمسية؟", inputMode: "options", options: ["عطارد", "الزهرة", "الأرض", "المريخ"], answers: ["عطارد"] },
+        { q: "ما اسم أول سلاح استخدمه النبي صلى الله عليه وسلم في المعركة؟", inputMode: "options", options: ["السيف", "الرمح", "القوس", "الدرع"], answers: ["السيف"] }
+    ];
+
+    let questionsBank = [];
+    let currentDoor = 0;
+    let score = 0;
+    let attempts = 0;
+    let goldenKeysLeft = 5;
+    let currentTeamName = '';
+    let isLockedOut = false;
+    let timerSeconds = 3000;
+    let timerInterval = null;
+    let verdictInterval = null;
+    let pendingSubmissionId = null;
+    let waitingForPresenter = false;
+    const TIMER_STATE_KEY = 'mq-round-timer';
+
+    // دالة خلط الأسئلة عشوائياً (Fisher-Yates Shuffle)
+    function shuffleArray(array) {
+        let shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    function switchView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function startGame() {
+        const team = document.getElementById('team-name').value.trim();
+        const pin = document.getElementById('access-code').value.trim();
+
+        if (!team) return alert("لطفاً أدخل اسم الفريق أولاً!");
+        if (pin !== CORRECT_PIN) return alert("رمز الدخول (PIN) غير صحيح! اطلبه من المشرف.");
+
+        currentTeamName = team;
+        setRoomCodeUI();
+        saveRoundState({ phase: 'waiting', team, roomCode: getRoomCode() });
+        ensureTeamResult(team);
+        document.getElementById('start-message').textContent = `تم تسجيل الفريق ${team}. انتظر المقدم لبدء الجولة.`;
+        document.getElementById('start-message').style.color = '#ffb703';
+    }
+
+    function saveRoundState(state) {
+        localStorage.setItem(ROUND_STATE_KEY, JSON.stringify(state));
+    }
+
+    function getRoomCode() {
+        const params = new URLSearchParams(window.location.search);
+        const roomFromUrl = params.get('room');
+        const existing = localStorage.getItem(ROOM_CODE_KEY);
+        const code = roomFromUrl || existing || DEFAULT_ROOM_CODE;
+        if (!existing || existing !== code) {
+            localStorage.setItem(ROOM_CODE_KEY, code);
+        }
+        return code;
+    }
+
+    function setRoomCodeUI() {
+        return;
+    }
+
+    function readAnswerReveal() {
+        try {
+            return JSON.parse(localStorage.getItem(ANSWER_REVEAL_KEY) || 'null');
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function writeAnswerReveal(value) {
+        localStorage.setItem(ANSWER_REVEAL_KEY, JSON.stringify(value));
+    }
+
+    function renderAnswerReveal() {
+        const panel = document.getElementById('answer-reveal');
+        if (!panel) return;
+        const reveal = readAnswerReveal();
+        if (!reveal) {
+            panel.style.display = 'none';
+            panel.textContent = 'الجواب الصحيح: -';
+            return;
+        }
+        panel.style.display = 'block';
+        panel.textContent = `الجواب الصحيح: ${reveal}`;
+    }
+
+    function clearAnswerReveal() {
+        localStorage.removeItem(ANSWER_REVEAL_KEY);
+        renderAnswerReveal();
+    }
+
+    function readRoundState() {
+        try {
+            return JSON.parse(localStorage.getItem(ROUND_STATE_KEY) || '{}');
+        } catch (error) {
+            return {};
+        }
+    }
+
+    function getRoomResultsKey() {
+        return `${ROOM_RESULTS_PREFIX}${getRoomCode()}`;
+    }
+
+    function readResults() {
+        const key = getRoomResultsKey();
+        try {
+            return JSON.parse(localStorage.getItem(key) || '[]');
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function writeResults(results) {
+        localStorage.setItem(getRoomResultsKey(), JSON.stringify(results));
+    }
+
+    function ensureTeamResult(teamName) {
+        const results = readResults();
+        let entry = results.find(item => item.name === teamName);
+        if (!entry) {
+            entry = { name: teamName, score: 0, doors: 0, joinedAt: Date.now() };
+            results.push(entry);
+            writeResults(results);
+        }
+        return entry;
+    }
+
+    function updateTeamResult(teamName, deltaScore, deltaDoors) {
+        const results = readResults();
+        let entry = results.find(item => item.name === teamName);
+        if (!entry) {
+            entry = { name: teamName, score: 0, doors: 0, joinedAt: Date.now() };
+            results.push(entry);
+        }
+        entry.score = (Number(entry.score) || 0) + Number(deltaScore || 0);
+        entry.doors = (Number(entry.doors) || 0) + Number(deltaDoors || 0);
+        entry.lastUpdated = Date.now();
+        writeResults(results);
+        renderLeaderboardPreview();
+        renderFullResults();
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;');
+    }
+
+    function renderLeaderboardPreview() {
+        const container = document.getElementById('leaderboard-preview');
+        if (!container) return;
+        const results = readResults().slice().sort((a, b) => (b.score || 0) - (a.score || 0) || (a.name || '').localeCompare(b.name || ''));
+        const top = results.slice(0, 3);
+        if (!top.length) {
+            container.innerHTML = '<div class="leaderboard-title">🏆 الصدارة</div><div class="leaderboard-item">لا توجد فرق بعد</div>';
+            return;
+        }
+        container.innerHTML = `<div class="leaderboard-title">🏆 الصدارة</div>${top.map((entry, index) => `<div class="leaderboard-item"><span>${index + 1}. ${escapeHtml(entry.name)}</span><span>${entry.score || 0} نقطة</span></div>`).join('')}`;
+    }
+
+    function renderFullResults() {
+        const container = document.getElementById('all-results-list');
+        if (!container) return;
+        const results = readResults().slice().sort((a, b) => (b.score || 0) - (a.score || 0) || (a.name || '').localeCompare(b.name || ''));
+        if (!results.length) {
+            container.innerHTML = '<div class="leaderboard-title">📊 جميع الفرق</div><div class="leaderboard-item">لا توجد فرق بعد</div>';
+            return;
+        }
+        container.innerHTML = `<div class="leaderboard-title">📊 جميع الفرق (${results.length})</div>${results.map((entry, index) => `<div class="leaderboard-item"><span>${index + 1}. ${escapeHtml(entry.name)}</span><span>${entry.score || 0} نقطة • ${entry.doors || 0} باب</span></div>`).join('')}`;
+    }
+
+    function launchGameFromPresenter() {
+        const state = readRoundState();
+        if (state.phase !== 'playing' && state.phase !== 'waiting') return;
+
+        currentDoor = 0;
+        score = 0;
+        clearAnswerReveal();
+        attempts = 0;
+        goldenKeysLeft = 5;
+        isLockedOut = false;
+        timerSeconds = 3000;
+        pendingSubmissionId = null;
+        waitingForPresenter = false;
+        questionsBank = shuffleArray(originalQuestions);
+        if (!localStorage.getItem(TIMER_STATE_KEY)) {
+            writeTimerState({ started: false, running: false, timeLeft: 3000 });
+        }
+
+        const roomCode = state.roomCode || getRoomCode();
+        if (!localStorage.getItem(ROOM_CODE_KEY)) localStorage.setItem(ROOM_CODE_KEY, roomCode);
+        if (state.roomCode) localStorage.setItem(ROOM_CODE_KEY, state.roomCode);
+        setRoomCodeUI();
+        document.getElementById('disp-team').innerText = currentTeamName || (readRoundState().team || 'الفريق');
+        ensureTeamResult(currentTeamName || (readRoundState().team || 'الفريق'));
+        document.getElementById('score-display').innerText = '0';
+        document.getElementById('golden-key-btn').style.display = 'block';
+        document.getElementById('golden-key-btn').textContent = `🔑 استخدام المفتاح الذهبي (${goldenKeysLeft})`;
+        document.getElementById('lockout-alert').style.display = 'none';
+        enableAnswerInput();
+        switchView('game-view');
+        renderDoors();
+        loadQuestion(true);
+        renderLeaderboardPreview();
+        renderFullResults();
+        startSharedTimerWatcher();
+        startVerdictWatcher();
+    }
+
+    function writeTimerState(state) {
+        localStorage.setItem(TIMER_STATE_KEY, JSON.stringify(state));
+    }
+
+    function readTimerState() {
+        try {
+            return JSON.parse(localStorage.getItem(TIMER_STATE_KEY) || '{}');
+        } catch (error) {
+            return {};
+        }
+    }
+
+    function formatTimer(totalSeconds) {
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+        const seconds = String(totalSeconds % 60).padStart(2, '0');
+        return `${minutes}:${seconds}`;
+    }
+
+    function startSharedTimerWatcher() {
+        const timerElem = document.getElementById('timer-display');
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+            const state = readTimerState();
+            if (state.running) {
+                const remaining = Math.max(0, Number(state.timeLeft || 3000));
+                timerElem.innerText = formatTimer(remaining);
+                timerSeconds = remaining;
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    endGame();
+                }
+            } else {
+                timerElem.innerText = formatTimer(Number(state.timeLeft || 3000));
+            }
+        }, 1000);
+
+        const initialState = readTimerState();
+        timerElem.innerText = formatTimer(Number(initialState.timeLeft || 3000));
+    }
+
+    function startVerdictWatcher() {
+        if (verdictInterval) clearInterval(verdictInterval);
+        verdictInterval = setInterval(checkPresenterVerdict, 1000);
+    }
+
+    function renderDoors() {
+        const container = document.getElementById('doors-container');
+        container.innerHTML = '';
+        for (let i = 0; i < 60; i++) {
+            const door = document.createElement('div');
+            door.className = `door ${i === currentDoor ? 'active' : ''} ${i < currentDoor ? 'opened' : ''}`;
+            door.innerText = i < currentDoor ? '✓' : i + 1;
+            container.appendChild(door);
+        }
+    }
+
+    function loadQuestion(keepReveal = true) {
+        if (currentDoor >= 60) return endGame();
+
+        const data = questionsBank[currentDoor];
+        document.getElementById('door-number').innerText = `الباب رقم (${currentDoor + 1})`;
+        document.getElementById('question-text').innerText = data.q;
+        document.getElementById('user-answer').value = '';
+
+        const badge = document.getElementById('type-badge');
+        if (data.type) {
+            badge.innerText = data.type;
+            badge.style.display = 'inline-block';
+        } else {
+            badge.style.display = 'none';
+        }
+
+        const imgElem = document.getElementById('question-img');
+        if (data.img) {
+            imgElem.src = data.img;
+            imgElem.style.display = 'inline-block';
+        } else {
+            imgElem.style.display = 'none';
+        }
+
+        if (!keepReveal) {
+            renderAnswerReveal();
+        } else {
+            clearAnswerReveal();
+        }
+
+        const inputEl = document.getElementById('user-answer');
+        const optionsContainer = document.getElementById('options-container');
+        const submitBtn = document.getElementById('submit-btn');
+        if (data.inputMode === 'options' && data.options) {
+            inputEl.style.display = 'none';
+            submitBtn.style.display = 'none';
+            optionsContainer.style.display = 'flex';
+            optionsContainer.innerHTML = '';
+            data.options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn-primary';
+                btn.style.marginTop = '0';
+                btn.textContent = option;
+                btn.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(btn);
+            });
+        } else {
+            inputEl.style.display = 'block';
+            submitBtn.style.display = 'block';
+            optionsContainer.style.display = 'none';
+            optionsContainer.innerHTML = '';
+        }
+    }
+
+    function normalizeAnswer(text) {
+        return String(text || '')
+            .trim()
+            .toLowerCase()
+            .replace(/[\s\u200f\u200e]/g, '')
+            .replace(/[^\p{L}\p{N}]/gu, '');
+    }
+
+    function isManualReviewQuestion(data) {
+        if (!data) return false;
+        if (data.manualReview) return true;
+        if (data.type) {
+            const text = String(data.type).toLowerCase();
+            return text.includes('مهمة') || text.includes('تحدي') || text.includes('challenge') || text.includes('task');
+        }
+        return false;
+    }
+
+    function answerMatchesQuestion(data, userInput) {
+        const acceptedAnswers = Array.isArray(data.answers) ? data.answers : [];
+        const normalizedInput = normalizeAnswer(userInput);
+        return acceptedAnswers.some(answer => normalizeAnswer(answer) === normalizedInput);
+    }
+
+    function checkAnswer(value = null) {
+        if (isLockedOut || waitingForPresenter) return;
+
+        const userInput = value !== null ? String(value).trim() : document.getElementById('user-answer').value.trim();
+        if (!userInput) return alert("الرجاء كتابة إجابة أولاً!");
+
+        const data = questionsBank[currentDoor];
+        const teamName = document.getElementById('team-name').value.trim() || document.getElementById('disp-team').innerText;
+
+        if (!isManualReviewQuestion(data)) {
+            if (answerMatchesQuestion(data, userInput)) {
+                const points = getPointsForAttempt(attempts);
+                score += points;
+                document.getElementById('score-display').innerText = score;
+                updateTeamResult(teamName, points, 1);
+                currentDoor++;
+                attempts = 0;
+                renderDoors();
+                showAnswerReveal(data);
+                loadQuestion(false);
+                enableAnswerInput();
+            } else {
+                attempts++;
+                triggerLockout();
+            }
+            return;
+        }
+
+        const payload = {
+            id: Date.now().toString(),
+            team: teamName,
+            questionIndex: currentDoor + 1,
+            questionText: data.q,
+            answer: userInput,
+            attempt: attempts,
+            status: 'pending'
+        };
+
+        const queue = JSON.parse(localStorage.getItem('mq-presenter-queue') || '[]');
+        queue.push(payload);
+        localStorage.setItem('mq-presenter-queue', JSON.stringify(queue));
+
+        pendingSubmissionId = payload.id;
+        waitingForPresenter = true;
+        document.getElementById('user-answer').disabled = true;
+        document.getElementById('submit-btn').disabled = true;
+        document.getElementById('lockout-alert').style.display = 'block';
+        document.getElementById('lockout-alert').innerHTML = 'تم إرسال الإجابة إلى المقدم. انتظر حكمه...';
+        document.getElementById('lockout-alert').style.color = 'var(--gold)';
+        document.getElementById('lockout-alert').style.fontSize = '0.95rem';
+    }
+
+    function checkPresenterVerdict() {
+        if (!waitingForPresenter || !pendingSubmissionId) return;
+
+        const verdicts = JSON.parse(localStorage.getItem('mq-presenter-verdicts') || '[]');
+        const verdict = verdicts.find(item => item.id === pendingSubmissionId);
+        if (!verdict) return;
+
+        if (verdict.status === 'accepted') {
+            const teamName = currentTeamName || document.getElementById('team-name').value.trim() || document.getElementById('disp-team').innerText;
+            const points = getPointsForAttempt(verdict.attempt || attempts);
+            score += points;
+            document.getElementById('score-display').innerText = score;
+            updateTeamResult(teamName, points, 1);
+            currentDoor++;
+            attempts = 0;
+            waitingForPresenter = false;
+            showAnswerReveal(questionsBank[currentDoor - 1]);
+            pendingSubmissionId = null;
+            renderDoors();
+            loadQuestion(false);
+            enableAnswerInput();
+        } else if (verdict.status === 'rejected') {
+            attempts++;
+            waitingForPresenter = false;
+            pendingSubmissionId = null;
+            triggerLockout();
+        }
+    }
+
+    function getPointsForAttempt(attemptNumber) {
+        if (attemptNumber === 0) return 100;
+        if (attemptNumber === 1) return 70;
+        if (attemptNumber === 2) return 40;
+        return 20;
+    }
+
+    function triggerLockout() {
+        isLockedOut = true;
+        const alertBox = document.getElementById('lockout-alert');
+        const lockTimer = document.getElementById('lock-timer');
+        alertBox.style.display = 'block';
+        alertBox.style.color = 'var(--danger)';
+        
+        let countdown = 20;
+        lockTimer.innerText = countdown;
+
+        document.getElementById('user-answer').disabled = true;
+        document.getElementById('submit-btn').disabled = true;
+
+        const lockInterval = setInterval(() => {
+            countdown--;
+            lockTimer.innerText = countdown;
+            if (countdown <= 0) {
+                clearInterval(lockInterval);
+                isLockedOut = false;
+                alertBox.style.display = 'none';
+                enableAnswerInput();
+            }
+        }, 1000);
+    }
+
+    function enableAnswerInput() {
+        document.getElementById('user-answer').disabled = false;
+        document.getElementById('submit-btn').disabled = false;
+    }
+
+    function useGoldenKey() {
+        if (goldenKeysLeft <= 0 || isLockedOut) return;
+        goldenKeysLeft--;
+        score += 150;
+        document.getElementById('score-display').innerText = score;
+        updateTeamResult(currentTeamName || document.getElementById('team-name').value.trim() || document.getElementById('disp-team').innerText, 150, 1);
+        document.getElementById('golden-key-btn').textContent = `🔑 استخدام المفتاح الذهبي (${goldenKeysLeft})`;
+        if (goldenKeysLeft <= 0) {
+            document.getElementById('golden-key-btn').style.display = 'none';
+        }
+        
+        currentDoor++;
+        attempts = 0;
+        renderDoors();
+        showAnswerReveal(questionsBank[currentDoor - 1]);
+        loadQuestion(false);
+    }
+
+    function showAnswerReveal(data) {
+        if (!data) return;
+        const answerText = Array.isArray(data.answers) && data.answers.length ? data.answers[0] : 'غير متوفر';
+        writeAnswerReveal(answerText);
+        renderAnswerReveal();
+    }
+
+    function endGame() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (verdictInterval) {
+            clearInterval(verdictInterval);
+            verdictInterval = null;
+        }
+        const teamName = currentTeamName || document.getElementById('team-name').value.trim() || 'الفريق';
+        document.getElementById('final-team-name').innerText = teamName;
+        document.getElementById('final-score').innerText = score;
+        updateTeamResult(teamName, 0, 0);
+        renderLeaderboardPreview();
+        renderFullResults();
+        switchView('results-view');
+    }
+
+    window.addEventListener('storage', (event) => {
+        if (event.key === ROUND_STATE_KEY) {
+            const state = readRoundState();
+            if (state.phase === 'playing') {
+                currentTeamName = state.team || currentTeamName;
+                launchGameFromPresenter();
+            }
+        }
+
+        if (event.key === RESULTS_KEY) {
+            renderLeaderboardPreview();
+            renderFullResults();
+        }
+
+        if (event.key === ANSWER_REVEAL_KEY || event.key === ROOM_CODE_KEY) {
+            renderAnswerReveal();
+            setRoomCodeUI();
+        }
+
+        const timerElem = document.getElementById('timer-display');
+        const state = readTimerState();
+        timerElem.innerText = formatTimer(Number(state.timeLeft || 3000));
+    });
+
+    document.getElementById('user-answer').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            checkAnswer();
+        }
+    });
+
+    document.getElementById('access-code').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            startGame();
+        }
+    });
+
+    setRoomCodeUI();
+    renderAnswerReveal();
+    renderLeaderboardPreview();
+    renderFullResults();
+</script>
+</body>
+</html>
