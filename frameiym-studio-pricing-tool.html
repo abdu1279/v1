@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FRAMEIYM Studio - بوصلة المشروع والتسعير التكيفي الدقيق</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Readex+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fieldBg: '#101220', fieldCard: '#1a1c2e', fieldBorder: '#2a2d45', fieldAccent: '#8b7bf7',
+                        frameiymNavy: '#1D3558', frameiymOrange: '#F89D53', frameiymGold: '#FCE2AB'
+                    },
+                    fontFamily: {
+                        readex: ['"Readex Pro"', 'sans-serif'],
+                        alexandria: ['Alexandria', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- html-to-image & Lucide Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body { font-family: 'Alexandria', sans-serif; overflow: hidden; background-color: #101220; transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        h1, h2, h3, h4, .font-readex { font-family: '"Readex Pro"', sans-serif; }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 123, 247, 0.3); border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(139, 123, 247, 0.6); }
+        
+        [contenteditable="true"] { outline: none; transition: all 0.3s ease; border-radius: 8px; padding: 2px 6px; margin: -2px -6px; border: 1px dashed transparent; position: relative; }
+        [contenteditable="true"]:hover { border-color: rgba(139, 123, 247, 0.4); cursor: text; background: rgba(255,255,255,0.03); }
+        [contenteditable="true"]:focus { background: rgba(255,255,255,0.08); border-color: transparent; box-shadow: 0 0 0 2px rgba(139, 123, 247, 0.5); z-index: 40; }
+        
+        [contenteditable="true"]:empty { display: none !important; margin: 0 !important; padding: 0 !important; }
+        
+        .live-mode .group\/card:not(:hover) .group\/feat:has([contenteditable="true"]:empty),
+        .live-mode .group\/card:not(:hover) .btn-container:has([contenteditable="true"]:empty),
+        .live-mode .group\/promo:not(:hover) h3:has([contenteditable="true"]:empty),
+        .live-mode .group\/footer:not(:hover) .btn-container:has([contenteditable="true"]:empty) {
+            display: none !important; margin: 0 !important; padding: 0 !important;
+        }
+
+        .live-mode .group\/card:hover [contenteditable="true"]:empty,
+        .live-mode .group\/header:hover [contenteditable="true"]:empty,
+        .live-mode .group\/promo:hover [contenteditable="true"]:empty,
+        .live-mode .group\/footer:hover [contenteditable="true"]:empty {
+            display: inline-block !important;
+            min-width: 50px; min-height: 24px; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px dashed rgba(139, 123, 247, 0.6);
+            opacity: 0.8; margin: auto;
+        }
+        .live-mode .group\/card:hover [contenteditable="true"][data-placeholder]:empty:not(:focus):before,
+        .live-mode .group\/header:hover [contenteditable="true"][data-placeholder]:empty:not(:focus):before,
+        .live-mode .group\/promo:hover [contenteditable="true"][data-placeholder]:empty:not(:focus):before,
+        .live-mode .group\/footer:hover [contenteditable="true"][data-placeholder]:empty:not(:focus):before {
+            content: attr(data-placeholder);
+            font-size: 0.85em; opacity: 0.6; font-style: italic; pointer-events: none;
+        }
+
+        [data-hidden="true"] { display: none !important; margin: 0 !important; padding: 0 !important; }
+        .live-mode .group\/card:hover [data-hidden="true"],
+        .live-mode .group\/header:hover [data-hidden="true"],
+        .live-mode .group\/promo:hover [data-hidden="true"],
+        .live-mode .group\/footer:hover [data-hidden="true"] {
+            display: inline-block !important;
+            min-width: 50px; min-height: 24px;
+            background: rgba(239, 68, 68, 0.08) !important;
+            border: 1px dashed rgba(239, 68, 68, 0.55) !important;
+            opacity: 0.55; margin: auto;
+        }
+
+        .golden-choice-item {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(217, 119, 6, 0.24) 100%) !important;
+            border: 1.5px solid #fbbf24 !important;
+            box-shadow: 0 0 25px -3px rgba(245, 158, 11, 0.45), inset 0 0 14px rgba(251, 191, 36, 0.25) !important;
+            border-radius: 18px !important;
+            padding: 10px 14px !important;
+            color: #fef08a !important;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            position: relative;
+            transform: scale(1.02);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .golden-choice-item::before {
+            content: '★';
+            position: absolute;
+            top: -9px;
+            left: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 7px;
+            border-radius: 99px;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+            pointer-events: none;
+        }
+
+        #text-toolbar { position: absolute; display: none; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.15); padding: 8px 12px; border-radius: 99px; gap: 10px; z-index: 99999; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7); transform: translateY(-10px); transition: top 0.2s ease, left 0.2s ease; }
+        #text-toolbar::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0; border-style: solid; border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent; }
+        .tt-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; color: #cbd5e1; cursor: pointer; transition: 0.2s; background: transparent; border: none; }
+        .tt-btn:hover { background: rgba(255,255,255,0.1); color: #fff; transform: scale(1.05); }
+        .tt-color-wrap { position: relative; width: 32px; height: 32px; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .tt-color-wrap:hover { transform: scale(1.1); border-color: rgba(255,255,255,0.5); }
+        .tt-color-wrap input[type="color"] { position: absolute; inset: -10px; width: 50px; height: 50px; cursor: pointer; opacity: 0; }
+        .tt-color-wrap i { width: 16px; height: 16px; color: #fff; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8)); }
+
+        .floating-toolbar { position: absolute; opacity: 0; pointer-events: none; transition: all 0.3s ease; background: rgba(26, 28, 46, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(139, 123, 247, 0.2); padding: 6px; border-radius: 99px; display: flex; gap: 4px; z-index: 50; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.6); }
+        .card-toolbar { top: -25px; left: 50%; transform: translateX(-50%) translateY(10px); }
+        .group\/card:hover .card-toolbar { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+        .feat-toolbar { right: -42px; top: 50%; transform: translateY(-50%) translateX(-10px); flex-direction: column; padding: 5px; border-radius: 20px; }
+        .group\/feat:hover .feat-toolbar { opacity: 1; pointer-events: auto; transform: translateY(-50%) translateX(0); }
+
+        .tool-btn { padding: 8px; border-radius: 50%; color: #9ca3af; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .tool-btn:hover { background: rgba(139, 123, 247, 0.2); color: #8b7bf7; }
+        .tool-btn.gold:hover { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .tool-btn.danger:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .tool-btn.warning:hover { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+
+        #loader { transition: opacity 0.6s ease, visibility 0.6s ease; z-index: 999999; }
+        #export-arena { position: absolute; top: 0; left: 0; z-index: -9999; opacity: 0; pointer-events: none; width: 1440px; }
+
+        .smooth-sidebar { border-top-left-radius: 36px; border-bottom-left-radius: 36px; box-shadow: -10px 0 50px rgba(0,0,0,0.08); }
+        .glass-panel { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .glass-panel-dark { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        .featured-ribbon { display: inline-flex; align-items: center; gap: 6px; }
+
+        .logo-frame { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; transition: width 0.25s ease, height 0.25s ease, border-radius 0.25s ease; }
+        .logo-frame img { transition: transform 0.25s ease; }
+
+        .compass-tab { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .compass-tab.active { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.25); }
+        .custom-select-dropdown { max-height: 240px; overflow-y: auto; }
+        
+        .tab-btn-active { background-color: #8b7bf7; color: #ffffff; }
+        .tab-btn-inactive { background-color: #f3f4f6; color: #4b5563; }
+        .tab-btn-inactive:hover { background-color: #e5e7eb; }
+        
+        .sidebar-input-lbl { background: transparent; border: none; border-bottom: 1px solid rgba(0,0,0,0.1); width: 100%; text-align: right; color: #6b7280; font-size: 10px; margin-bottom: 4px; padding-bottom: 2px; outline: none; transition: 0.3s; }
+        .sidebar-input-lbl:focus { border-bottom-color: #8b7bf7; color: #4f46e5; }
+        
+        .break-words { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
+        .min-w-0 { min-width: 0; }
+    </style>
+</head>
+<body class="text-right flex h-screen">
+
+    <!-- شاشة التحميل -->
+    <div id="loader" class="fixed inset-0 bg-fieldBg flex flex-col items-center justify-center text-white">
+        <div class="animate-spin mb-6"><i data-lucide="compass" class="w-16 h-16 text-fieldAccent animate-pulse"></i></div>
+        <div class="font-readex font-bold text-3xl tracking-wider mb-3">FRAMEIYM STUDIO</div>
+        <div class="font-alexandria text-sm text-fieldAccent opacity-80">تجهيز بوصلة المشروع والتحكم الدقيق في التسعير...</div>
+    </div>
+
+    <!-- شريط التنسيق الشامل -->
+    <div id="text-toolbar" class="flex items-center">
+        <button class="tt-btn text-amber-400 hover:!text-amber-300 hover:scale-110" onclick="toggleGoldenChoice()" title="الخيار الذهبي (تمييز فخم مع حواف ونيون)"><i data-lucide="sparkles" class="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(245,158,11,0.8)]"></i></button>
+        <div class="w-px h-6 bg-slate-600/50 mx-0.5"></div>
+        <div class="tt-color-wrap" title="تلوين النص" style="background: linear-gradient(135deg, #fca5a5, #38bdf8);">
+            <i data-lucide="palette"></i><input type="color" id="tt-color">
+        </div>
+        <div class="tt-color-wrap" title="خلفية النص (تظليل)" style="background: rgba(255,255,255,0.15);">
+            <i data-lucide="highlighter"></i><input type="color" id="tt-bg">
+        </div>
+        <div class="w-px h-6 bg-slate-600/50 mx-0.5"></div>
+        <button class="tt-btn" onclick="adjustFontSize(1)" title="تكبير الخط"><i data-lucide="a-arrow-up" class="w-5 h-5"></i></button>
+        <button class="tt-btn" onclick="adjustFontSize(-1)" title="تصغير الخط"><i data-lucide="a-arrow-down" class="w-5 h-5"></i></button>
+        <div class="w-px h-6 bg-slate-600/50 mx-0.5"></div>
+        <button class="tt-btn hover:!text-orange-400" onclick="resetElStyle()" title="إعادة للوضع الافتراضي"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
+        <button id="tt-toggle-hide" class="tt-btn hover:!text-amber-400" onclick="toggleFieldHidden()" title="إخفاء/إظهار هذا الحقل"><i data-lucide="eye-off" class="w-4 h-4"></i></button>
+        <button class="tt-btn hover:!text-red-500" onclick="clearActiveElText()" title="حذف النص كلياً"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+    </div>
+
+    <!-- لوحة التحكم الجانبية -->
+    <aside class="w-full md:w-[420px] bg-white h-full flex flex-col z-20 shrink-0 relative overflow-hidden smooth-sidebar m-2 my-0 md:my-2 ml-0 md:ml-2 border border-gray-100">
+        <div class="p-5 border-b border-gray-50 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur-md z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 bg-purple-50 rounded-2xl flex items-center justify-center text-fieldAccent shadow-sm">
+                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="font-readex font-bold text-base text-gray-800 leading-none mb-1">لوحة التحكم والتسعير</h1>
+                    <p class="text-[10px] font-alexandria text-gray-500">إدارة الباقات والتسعير التكيفي المخصص</p>
+                </div>
+            </div>
+            <button onclick="resetAll()" class="p-2.5 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all shadow-sm" title="إعادة اللوحة كاملة للوضع الافتراضي">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <div class="p-5 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+            
+            <div class="bg-gradient-to-br from-indigo-50/70 via-purple-50/70 to-slate-50 p-4 rounded-3xl border border-purple-100">
+                <div class="flex items-center justify-between mb-3">
+                    <label class="text-xs font-bold text-indigo-950 font-readex flex items-center gap-1.5">
+                        <i data-lucide="coins" class="w-4 h-4 text-fieldAccent"></i> التحكم المنفصل لكل فئة
+                    </label>
+                    <span class="text-[9px] bg-indigo-100 text-indigo-800 font-bold px-2 py-0.5 rounded-full">تعديل مباشر</span>
+                </div>
+                <p class="text-[10px] text-gray-500 font-alexandria leading-relaxed mb-3">
+                    الباقات ومسميات الأحجام والأسعار منفصلة تماماً لكل فئة أدناه لضمان الدقة العالية.
+                </p>
+
+                <div class="flex bg-gray-200/60 p-1 rounded-2xl gap-1 mb-4">
+                    <button type="button" onclick="setSidebarPricingTab('villa')" id="tab-btn-villa" class="flex-1 py-1.5 text-xs font-bold rounded-xl font-readex transition-all tab-btn-active">🏡 فلة</button>
+                    <button type="button" onclick="setSidebarPricingTab('apartment')" id="tab-btn-apartment" class="flex-1 py-1.5 text-xs font-bold rounded-xl font-readex transition-all tab-btn-inactive">🏢 شقة</button>
+                    <button type="button" onclick="setSidebarPricingTab('building')" id="tab-btn-building" class="flex-1 py-1.5 text-xs font-bold rounded-xl font-readex transition-all tab-btn-inactive">🏗️ عمارة</button>
+                </div>
+
+                <div id="pricing-panel-villa" class="space-y-3">
+                    <div class="bg-white p-3 rounded-2xl border border-purple-100 shadow-sm">
+                        <div class="text-[11px] font-bold text-gray-700 font-readex mb-2 flex items-center justify-between">
+                            <span>الأسعار الأساسية لباقات الفلة:</span>
+                            <span class="text-[10px] text-gray-400 font-normal">ريال سعودي</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">الأساسية:</label>
+                                <input type="number" id="v-pkg-101" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('villa', 'packages', 101, this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">المتكاملة:</label>
+                                <input type="number" id="v-pkg-102" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('villa', 'packages', 102, this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">النخبة:</label>
+                                <input type="number" id="v-pkg-103" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('villa', 'packages', 103, this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-2xl border border-purple-100 shadow-sm space-y-2">
+                        <div class="text-[11px] font-bold text-gray-700 font-readex">إضافات أحجام ومساحات الفلة:</div>
+                        <div class="grid grid-cols-3 gap-2 text-[10px]">
+                            <div>
+                                <input type="text" id="v-lbl-sml" class="sidebar-input-lbl" title="تعديل مسمى الحجم الصغير" oninput="updatePricingMatrix('villa', 'labels', 'small', this.value, true)">
+                                <div class="text-[9px] text-gray-400 text-center mt-1">السعر الأساسي</div>
+                            </div>
+                            <div>
+                                <input type="text" id="v-lbl-med" class="sidebar-input-lbl" title="تعديل مسمى الحجم المتوسط" oninput="updatePricingMatrix('villa', 'labels', 'medium', this.value, true)">
+                                <input type="number" id="v-area-med" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('villa', 'areas', 'medium', this.value)">
+                            </div>
+                            <div>
+                                <input type="text" id="v-lbl-lrg" class="sidebar-input-lbl" title="تعديل مسمى الحجم الكبير" oninput="updatePricingMatrix('villa', 'labels', 'large', this.value, true)">
+                                <input type="number" id="v-area-lrg" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('villa', 'areas', 'large', this.value)">
+                            </div>
+                        </div>
+                        <div class="pt-1">
+                            <label class="block text-[10px] text-gray-500 mb-0.5">نسبة احتساب كل فلة إضافية (75% = خصم 25%):</label>
+                            <div class="flex items-center gap-1.5">
+                                <input type="number" id="v-extra-unit" min="10" max="100" class="w-20 bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-indigo-900 text-center text-xs" oninput="updatePricingMatrix('villa', 'extraUnitRate', null, this.value)">
+                                <span class="text-[10px] text-gray-400">% من السعر</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pricing-panel-apartment" class="space-y-3 hidden">
+                    <div class="bg-white p-3 rounded-2xl border border-purple-100 shadow-sm">
+                        <div class="text-[11px] font-bold text-gray-700 font-readex mb-2 flex items-center justify-between">
+                            <span>الأسعار الأساسية لباقات الشقة:</span>
+                            <span class="text-[10px] text-gray-400 font-normal">ريال سعودي</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">الأساسية:</label>
+                                <input type="number" id="a-pkg-101" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('apartment', 'packages', 101, this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">المتكاملة:</label>
+                                <input type="number" id="a-pkg-102" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('apartment', 'packages', 102, this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">النخبة:</label>
+                                <input type="number" id="a-pkg-103" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('apartment', 'packages', 103, this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-2xl border border-purple-100 shadow-sm space-y-2">
+                        <div class="text-[11px] font-bold text-gray-700 font-readex">إضافات مساحات الشقة:</div>
+                        <div class="grid grid-cols-3 gap-2 text-[10px]">
+                            <div>
+                                <input type="text" id="a-lbl-sml" class="sidebar-input-lbl" title="تعديل مسمى الحجم الصغير" oninput="updatePricingMatrix('apartment', 'labels', 'small', this.value, true)">
+                                <div class="text-[9px] text-gray-400 text-center mt-1">السعر الأساسي</div>
+                            </div>
+                            <div>
+                                <input type="text" id="a-lbl-med" class="sidebar-input-lbl" title="تعديل مسمى الحجم المتوسط" oninput="updatePricingMatrix('apartment', 'labels', 'medium', this.value, true)">
+                                <input type="number" id="a-area-med" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('apartment', 'areas', 'medium', this.value)">
+                            </div>
+                            <div>
+                                <input type="text" id="a-lbl-lrg" class="sidebar-input-lbl" title="تعديل مسمى الحجم الكبير" oninput="updatePricingMatrix('apartment', 'labels', 'large', this.value, true)">
+                                <input type="number" id="a-area-lrg" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('apartment', 'areas', 'large', this.value)">
+                            </div>
+                        </div>
+                        <div class="pt-1">
+                            <label class="block text-[10px] text-gray-500 mb-0.5">نسبة احتساب كل شقة إضافية (65% = خصم 35%):</label>
+                            <div class="flex items-center gap-1.5">
+                                <input type="number" id="a-extra-unit" min="10" max="100" class="w-20 bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-indigo-900 text-center text-xs" oninput="updatePricingMatrix('apartment', 'extraUnitRate', null, this.value)">
+                                <span class="text-[10px] text-gray-400">% من السعر</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pricing-panel-building" class="space-y-3 hidden">
+                    <div class="bg-white p-3 rounded-2xl border border-purple-100 shadow-sm">
+                        <div class="text-[11px] font-bold text-gray-700 font-readex mb-2 flex items-center justify-between">
+                            <span>الأسعار الأساسية لباقات العمارة:</span>
+                            <span class="text-[10px] text-gray-400 font-normal">ريال سعودي</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">الأساسية:</label>
+                                <input type="number" id="b-pkg-101" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('building', 'packages', 101, this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">المتكاملة:</label>
+                                <input type="number" id="b-pkg-102" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('building', 'packages', 102, this.value)">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] text-gray-500 mb-0.5">النخبة:</label>
+                                <input type="number" id="b-pkg-103" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 text-xs font-bold text-indigo-900 text-center" oninput="updatePricingMatrix('building', 'packages', 103, this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-2xl border border-purple-100 shadow-sm space-y-2">
+                        <div class="text-[11px] font-bold text-gray-700 font-readex">إضافات عدد الشقق (مسميات وأسعار):</div>
+                        <div class="grid grid-cols-4 gap-1.5 text-[9px]">
+                            <div>
+                                <input type="text" id="b-lbl-apt4" class="sidebar-input-lbl" title="مسمى الفئة الأساسية" oninput="updatePricingMatrix('building', 'aptLabels', 4, this.value, true)">
+                                <div class="text-[9px] text-gray-400 text-center mt-1">مشمول</div>
+                            </div>
+                            <div>
+                                <input type="text" id="b-lbl-apt8" class="sidebar-input-lbl" title="مسمى الفئة 1" oninput="updatePricingMatrix('building', 'aptLabels', 8, this.value, true)">
+                                <input type="number" id="b-apt-8" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('building', 'aptTiers', 8, this.value)">
+                            </div>
+                            <div>
+                                <input type="text" id="b-lbl-apt12" class="sidebar-input-lbl" title="مسمى الفئة 2" oninput="updatePricingMatrix('building', 'aptLabels', 12, this.value, true)">
+                                <input type="number" id="b-apt-12" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('building', 'aptTiers', 12, this.value)">
+                            </div>
+                            <div>
+                                <input type="text" id="b-lbl-apt20" class="sidebar-input-lbl" title="مسمى الفئة 3" oninput="updatePricingMatrix('building', 'aptLabels', 20, this.value, true)">
+                                <input type="number" id="b-apt-20" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('building', 'aptTiers', 20, this.value)">
+                            </div>
+                        </div>
+                        <div class="text-[11px] font-bold text-gray-700 font-readex mt-2 border-t pt-2">إضافات مساحات العمارة:</div>
+                        <div class="grid grid-cols-3 gap-2 text-[10px]">
+                            <div>
+                                <input type="text" id="b-lbl-sml" class="sidebar-input-lbl" title="تعديل مسمى المساحة الصغير" oninput="updatePricingMatrix('building', 'labels', 'small', this.value, true)">
+                                <div class="text-[9px] text-gray-400 text-center mt-1">السعر الأساسي</div>
+                            </div>
+                            <div>
+                                <input type="text" id="b-lbl-med" class="sidebar-input-lbl" title="تعديل مسمى المساحة المتوسطة" oninput="updatePricingMatrix('building', 'labels', 'medium', this.value, true)">
+                                <input type="number" id="b-area-med" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('building', 'areas', 'medium', this.value)">
+                            </div>
+                            <div>
+                                <input type="text" id="b-lbl-lrg" class="sidebar-input-lbl" title="تعديل مسمى المساحة الكبيرة" oninput="updatePricingMatrix('building', 'labels', 'large', this.value, true)">
+                                <input type="number" id="b-area-lrg" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updatePricingMatrix('building', 'areas', 'large', this.value)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm space-y-3">
+                <div class="text-xs font-bold text-gray-700 font-readex flex items-center justify-between">
+                    <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4 text-fieldAccent"></i> تكاليف التنقل الجغرافي (مخفية):</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[10px]">
+                    <div>
+                        <label class="block text-gray-500 mb-0.5">القطاع 1 (شمال):</label>
+                        <div class="flex items-center gap-1"><input type="number" id="sec1-fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updateSectorFee(1, this.value)"><span class="text-gray-400">ر.س</span></div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-0.5">القطاع 2 (وسط):</label>
+                        <div class="flex items-center gap-1"><input type="number" id="sec2-fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updateSectorFee(2, this.value)"><span class="text-gray-400">ر.س</span></div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-0.5">القطاع 3 (شرق):</label>
+                        <div class="flex items-center gap-1"><input type="number" id="sec3-fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updateSectorFee(3, this.value)"><span class="text-gray-400">ر.س</span></div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-500 mb-0.5">القطاع 4 (غرب):</label>
+                        <div class="flex items-center gap-1"><input type="number" id="sec4-fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updateSectorFee(4, this.value)"><span class="text-gray-400">ر.س</span></div>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-gray-500 mb-0.5">القطاع 5 (جنوب ووسط تاريخي):</label>
+                        <div class="flex items-center gap-1"><input type="number" id="sec5-fee" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-1.5 font-bold text-fieldAccent text-center" oninput="updateSectorFee(5, this.value)"><span class="text-gray-400">ر.س</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-gray-50">
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider font-readex pl-2">النمط البصري (Theme)</label>
+                <div id="theme-picker" class="grid grid-cols-1 gap-3"></div>
+            </div>
+
+            <hr class="border-gray-50">
+
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-4 uppercase tracking-wider font-readex flex items-center gap-2 pl-2"><i data-lucide="image" class="w-4 h-4"></i> الهندسة المكانية للشعار</label>
+                <input type="file" id="logo-upload" accept="image/*" class="hidden">
+                <button onclick="document.getElementById('logo-upload').click()" class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-purple-50/50 border border-purple-100 rounded-2xl text-xs font-bold text-purple-600 hover:bg-purple-100 transition-all mb-4">
+                    <i data-lucide="upload-cloud" class="w-4 h-4"></i> رفع الشعار من الجهاز
+                </button>
+                
+                <div class="space-y-4">
+                    <div class="bg-gray-50/50 p-4 rounded-3xl border border-gray-100">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-xs font-bold text-gray-700 font-readex">مستطيل الشعار الاحترافي</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="toggle-logo-board" class="sr-only peer" onchange="updateLogo()">
+                                <div class="w-8 h-4 bg-gray-200 rounded-full peer peer-checked:bg-fieldAccent transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4"></div>
+                            </label>
+                        </div>
+
+                        <div class="mb-1 text-[10px] text-gray-500 font-medium">عرض المستطيل: <span id="val-logo-board-framew" class="text-fieldAccent font-bold"></span>px</div>
+                        <input type="range" id="framew-logo-board" min="80" max="500" value="220" class="w-full accent-fieldAccent mb-3" oninput="updateLogo()">
+
+                        <div class="mb-1 text-[10px] text-gray-500 font-medium">ارتفاع المستطيل: <span id="val-logo-board-frameh" class="text-fieldAccent font-bold"></span>px</div>
+                        <input type="range" id="frameh-logo-board" min="50" max="300" value="110" class="w-full accent-fieldAccent mb-3" oninput="updateLogo()">
+
+                        <div class="mb-1 text-[10px] text-gray-500 font-medium">تكبير/تصغير الشعار: <span id="val-logo-board-zoom" class="text-fieldAccent font-bold"></span>%</div>
+                        <input type="range" id="zoom-logo-board" min="40" max="250" value="100" class="w-full accent-fieldAccent mb-3" oninput="updateLogo()">
+
+                        <div class="flex justify-between gap-2 bg-white p-1 rounded-xl border border-gray-100 shadow-sm">
+                            <button onclick="setLogoAlign('board', 'right')" class="flex-1 py-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-fieldAccent transition-colors flex justify-center"><i data-lucide="align-right" class="w-3.5 h-3.5"></i></button>
+                            <button onclick="setLogoAlign('board', 'center')" class="flex-1 py-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-fieldAccent transition-colors flex justify-center"><i data-lucide="align-center" class="w-3.5 h-3.5"></i></button>
+                            <button onclick="setLogoAlign('board', 'left')" class="flex-1 py-1.5 rounded-lg hover:bg-purple-50 text-gray-400 hover:text-fieldAccent transition-colors flex justify-center"><i data-lucide="align-left" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 rounded-3xl border border-indigo-100/50">
+                <div class="flex justify-between items-center">
+                    <label class="text-xs font-bold text-indigo-900 font-readex flex items-center gap-1.5"><i data-lucide="gift" class="w-4 h-4 text-indigo-500"></i> تفعيل العرض الاستثماري الفاخر</label>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-promo" class="sr-only peer" onchange="togglePromo()">
+                        <div class="w-8 h-4 bg-indigo-200/50 rounded-full peer peer-checked:bg-indigo-500 transition-colors after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-500/10 via-purple-500/5 to-transparent p-4 rounded-3xl border border-amber-500/20">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-bold text-amber-800 dark:text-amber-300 font-readex flex items-center gap-1.5">
+                        <i data-lucide="database-backup" class="w-4 h-4 text-amber-500"></i> النسخ الاحتياطي ونقل البيانات
+                    </label>
+                    <span class="text-[9px] bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold px-2 py-0.5 rounded-full">JSON سريع</span>
+                </div>
+                <p class="text-[10px] text-gray-500 font-alexandria leading-relaxed mb-3">
+                    تصدير ملف شامل بجميع إعداداتك وأسعارك وخياراتك لنقلها أو تشغيلها على أي جهاز آخر بضغطة زر.
+                </p>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="exportDataJSON()" class="w-full bg-white hover:bg-amber-50 text-amber-700 font-bold py-2.5 px-3 rounded-xl border border-amber-200 hover:border-amber-400 transition-all flex items-center justify-center gap-1.5 text-xs shadow-sm">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i> تصدير البيانات
+                    </button>
+                    <input type="file" id="import-json-file" accept=".json" class="hidden" onchange="importDataJSON(event)">
+                    <button onclick="document.getElementById('import-json-file').click()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 text-xs">
+                        <i data-lucide="upload" class="w-3.5 h-3.5"></i> استيراد البيانات
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-3 pt-2">
+                <div class="bg-gray-50 p-4 rounded-3xl border border-gray-100">
+                    <label class="block text-xs font-bold text-gray-700 mb-2 font-readex flex items-center gap-1.5"><i data-lucide="camera" class="w-4 h-4 text-gray-500"></i> تصدير صورة (JPG)</label>
+                    
+                    <select id="export-scope" class="w-full mb-2 bg-white border border-gray-200 rounded-xl p-2.5 text-xs outline-none focus:border-fieldAccent font-alexandria text-gray-600 shadow-sm">
+                        <option value="full">تصدير اللوحة كاملة (تصميم شامل)</option>
+                        <option value="category">تصدير باقات الفئة المحددة فقط الذكي</option>
+                    </select>
+
+                    <select id="export-ratio" class="w-full mb-3 bg-white border border-gray-200 rounded-xl p-2.5 text-xs outline-none focus:border-fieldAccent font-alexandria text-gray-600 shadow-sm" onchange="toggleCustomExportSize()">
+                        <option value="9:16">ستوري طولي (9:16) — 1080×1920</option>
+                        <option value="4:5">منشور إنستغرام (4:5) — 1080×1350</option>
+                        <option value="1:1">مربع (1:1) — 1080×1080</option>
+                        <option value="16:9">عريض (16:9) — 1920×1080</option>
+                        <option value="custom">حجم مخصص بالبكسل...</option>
+                    </select>
+
+                    <div id="custom-size-fields" class="hidden grid grid-cols-2 gap-2 mb-3">
+                        <div>
+                            <label class="block text-[10px] text-gray-500 mb-1">العرض (px):</label>
+                            <input type="number" id="custom-export-w" value="2000" min="500" max="8000" class="w-full bg-white border border-gray-200 rounded-xl p-2 text-xs outline-none focus:border-fieldAccent text-center shadow-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-500 mb-1">الارتفاع (px):</label>
+                            <input type="number" id="custom-export-h" value="3000" min="500" max="8000" class="w-full bg-white border border-gray-200 rounded-xl p-2 text-xs outline-none focus:border-fieldAccent text-center shadow-sm">
+                        </div>
+                    </div>
+                    
+                    <button onclick="openExportPreview()" class="w-full bg-gray-800 text-white font-bold py-3 rounded-xl hover:bg-black transition-all flex items-center justify-center gap-2 text-xs shadow-md">
+                        معاينة وتصدير الصورة <i data-lucide="image-down" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div class="bg-emerald-50/50 p-4 rounded-3xl border border-emerald-100">
+                    <label class="block text-xs font-bold text-emerald-900 mb-2 font-readex flex items-center gap-1.5"><i data-lucide="globe" class="w-4 h-4 text-emerald-500"></i> تصدير ويب تفاعلي (HTML)</label>
+                    <input type="text" id="whatsapp-input" placeholder="رقم الواتساب (مثال: 96650...)" class="w-full mb-3 bg-white border border-emerald-100 rounded-xl p-2.5 text-xs outline-none focus:border-emerald-400 text-left dir-ltr shadow-sm font-alexandria placeholder-gray-400" oninput="updateWaNum(this.value)">
+                    <button onclick="exportHTML()" class="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 text-xs shadow-lg shadow-emerald-500/30">
+                        تصدير ملف الباقات التفاعلي للعميل <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- منطقة العمل الحية -->
+    <main class="flex-1 h-full overflow-y-auto relative custom-scrollbar live-mode" id="main-workspace">
+        <div id="live-preview" class="min-h-full w-full flex flex-col transition-colors duration-700 pb-32"></div>
+    </main>
+
+    <div id="export-arena"></div>
+
+    <!-- نافذة المعاينة قبل التصدير -->
+    <div id="export-preview-modal" class="fixed inset-0 z-[999999] bg-black/90 hidden flex-col items-center justify-center backdrop-blur-sm transition-opacity opacity-0 duration-300">
+        <div class="bg-[#1a1c2e] border border-[#2a2d45] rounded-3xl p-6 w-[95%] max-w-4xl max-h-[90vh] flex flex-col gap-4 shadow-2xl relative">
+            <button onclick="closeExportPreview()" class="absolute top-4 left-4 text-white hover:text-red-400 bg-white/10 rounded-full p-2 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-white font-readex font-bold text-xl text-center">معاينة التصدير قبل الحفظ</h3>
+            <div class="flex-1 overflow-auto bg-black/50 rounded-2xl flex items-center justify-center p-4 border border-white/5 relative min-h-[300px]">
+                <div id="preview-loader" class="absolute inset-0 flex flex-col items-center justify-center text-white"><i data-lucide="loader-2" class="w-10 h-10 animate-spin text-fieldAccent mb-2"></i><span class="font-alexandria text-sm">جاري تجهيز الصورة عالية الجودة...</span></div>
+                <img id="preview-image" src="" class="max-w-full max-h-full object-contain rounded-lg shadow-lg hidden">
+            </div>
+            <div class="flex gap-3 justify-center mt-2">
+                <button id="btn-download-img" onclick="downloadExportedImage()" class="bg-gradient-to-r from-fieldAccent to-purple-600 text-white font-readex font-bold py-3 px-8 rounded-xl shadow-lg hover:opacity-90 flex items-center gap-2 hidden transition-opacity"><i data-lucide="download"></i> حفظ الصورة بالدقة الكاملة</button>
+                <button onclick="closeExportPreview()" class="bg-gray-700 text-white font-readex py-3 px-8 rounded-xl hover:bg-gray-600 transition-colors">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const RIYADH_SECTORS = {
+            1: { name: "أحياء شمال الرياض (المحيط المباشر)", fee: 70 },
+            2: { name: "أحياء وسط وشمال الوسط", fee: 100 },
+            3: { name: "أحياء شرق وشمال شرق الرياض", fee: 120 },
+            4: { name: "أحياء غرب وجنوب غرب الرياض", fee: 150 },
+            5: { name: "أحياء جنوب ووسط الرياض التاريخي", fee: 150 }
+        };
+
+        const RIYADH_NEIGHBORHOODS = [
+            { name: "النرجس", sector: 1 }, { name: "العارض", sector: 1 }, { name: "الياسمين", sector: 1 }, { name: "الملقا", sector: 1 }, { name: "القيروان", sector: 1 }, { name: "بنبان", sector: 1 }, { name: "حطين", sector: 1 }, { name: "الصحافة", sector: 1 }, { name: "العقيق", sector: 1 }, { name: "الربيع", sector: 1 }, { name: "الوادي", sector: 1 }, { name: "الندى", sector: 1 }, { name: "الغدير", sector: 1 }, { name: "النفل", sector: 1 }, { name: "حطين الثغر", sector: 1 }, { name: "الخير", sector: 1 }, { name: "الجبيلة", sector: 1 }, { name: "حطين النموذجية", sector: 1 },
+            { name: "العليا", sector: 2 }, { name: "السليمانية", sector: 2 }, { name: "الورود", sector: 2 }, { name: "الملك فهد", sector: 2 }, { name: "المروج", sector: 2 }, { name: "المحمدية", sector: 2 }, { name: "النخيل", sector: 2 }, { name: "المعذر", sector: 2 }, { name: "المرسلات", sector: 2 }, { name: "الازدهار", sector: 2 }, { name: "التعاون", sector: 2 }, { name: "الواحة", sector: 2 }, { name: "صلاح الدين", sector: 2 }, { name: "النزهة", sector: 2 }, { name: "المغرزات", sector: 2 }, { name: "الرائد", sector: 2 }, { name: "أم الحمام الغربي", sector: 2 }, { name: "أم الحمام الشرقي", sector: 2 }, { name: "الخزامى", sector: 2 }, { name: "الفاخرية", sector: 2 }, { name: "جامعة الملك سعود", sector: 2 },
+            { name: "قرطبة", sector: 3 }, { name: "المونسية", sector: 3 }, { name: "الرمال", sector: 3 }, { name: "القادسية", sector: 3 }, { name: "اليرموك", sector: 3 }, { name: "إشبيلية", sector: 3 }, { name: "غرناطة", sector: 3 }, { name: "الحمراء", sector: 3 }, { name: "الروضة", sector: 3 }, { name: "النهضة", sector: 3 }, { name: "الخليج", sector: 3 }, { name: "النسيم الشرقي", sector: 3 }, { name: "النسيم الغربي", sector: 3 }, { name: "السلام", sector: 3 }, { name: "المنار", sector: 3 }, { name: "الريان", sector: 3 }, { name: "الروابي", sector: 3 }, { name: "المعيزلية", sector: 3 }, { name: "البيان", sector: 3 }, { name: "السعادة", sector: 3 }, { name: "الفيحاء", sector: 3 }, { name: "الجزيرة", sector: 3 }, { name: "السلي", sector: 3 }, { name: "الملك فيصل", sector: 3 }, { name: "القدس", sector: 3 },
+            { name: "الحي الدبلوماسي (السفارات)", sector: 4 }, { name: "عرقة", sector: 4 }, { name: "ظهرة لبن", sector: 4 }, { name: "المهدية", sector: 4 }, { name: "طويق", sector: 4 }, { name: "العريجاء الغربية", sector: 4 }, { name: "العريجاء الوسطى", sector: 4 }, { name: "العريجاء الشرقية", sector: 4 }, { name: "نمار", sector: 4 }, { name: "السويدي", sector: 4 }, { name: "شبرا", sector: 4 }, { name: "الزهرة", sector: 4 }, { name: "البديعة", sector: 4 }, { name: "الحزم", sector: 4 }, { name: "عكاظ", sector: 4 }, { name: "أحد", sector: 4 },
+            { name: "الملز", sector: 5 }, { name: "المربع", sector: 5 }, { name: "البطحاء", sector: 5 }, { name: "الديرة", sector: 5 }, { name: "الشفا", sector: 5 }, { name: "العزيزية", sector: 5 }, { name: "الدار البيضاء", sector: 5 }, { name: "بدر", sector: 5 }, { name: "الحائر", sector: 5 }, { name: "الضباط", sector: 5 }, { name: "العمل", sector: 5 }, { name: "المرقب", sector: 5 }, { name: "المنصورة", sector: 5 }, { name: "غبيراء", sector: 5 }, { name: "العود", sector: 5 }, { name: "الصالحية", sector: 5 }, { name: "الصناعية القديمة", sector: 5 }, { name: "الفيصلية", sector: 5 }, { name: "الفاروق", sector: 5 }, { name: "طيبة", sector: 5 }
+        ];
+
+        const defPackages = [
+            { id: 101, name: "الأساسية", originalPrice: "1150", priceComment: "شاملة معالجة لقطات المشروع", badge: "", waText: "مرحباً، مهتم بالباقة الأساسية", featured: false, features: [{ id: 1, text: "12 لقطة معمارية احترافية", included: true }, { id: 2, text: "تغطية للمساحات الأساسية", included: true }, { id: 3, text: "فيديو بانورامي قصير", included: false }], buttonText: "تحديد الباقة" },
+            { id: 102, name: "المتكاملة", originalPrice: "1750", priceComment: "الخيار الأكثر طلباً وتوازناً", badge: "الخيار المفضل", waText: "مرحباً، مهتم بالباقة المتكاملة", featured: true, features: [{ id: 1, text: "20 لقطة معمارية احترافية", included: true }, { id: 2, text: "فيديو سينمائي بدقة عالية", included: true }, { id: 3, text: "تغطية كافة المرافق والمساحات", included: true }], buttonText: "اختيار الباقة المتكاملة" },
+            { id: 103, name: "النخبة", originalPrice: "2450", priceComment: "تغطية VIP شاملة لكافة التفاصيل", badge: "تغطية VIP", waText: "مرحباً، مهتم بباقة النخبة", featured: false, features: [{ id: 1, text: "30 لقطة فائقة الدقة والوضوح", included: true }, { id: 2, text: "فيديو سينمائي + تعليق صوتي", included: true }, { id: 3, text: "تعديلات مفتوحة لضمان الرضا التام", included: true }], buttonText: "حجز باقة النخبة" }
+        ];
+
+        const defaultData = {
+            theme: 'field', whatsapp: "", styles: {}, hidden: {},
+            logo: { src: "", cardSize: 50, cardWidth: 100, cardSpace: 24, cardAlign: 'center', showInCard: false, boardFrameW: 220, boardFrameH: 110, boardRadius: 28, boardZoom: 100, boardSpace: 32, boardAlign: 'center', showInBoard: true },
+            header: { title: "الخطة الميدانية", subtitle: "تغطيات بصرية تعكس فخامة مشاريعك المعمارية" },
+            footer: { text: "الأسعار أعلاه تحتسب بدقة وفق بوصلة مشروعك وموقعه في الرياض.", ctaText: "تواصل معنا لمناقشة مشروعك", waText: "مرحباً، أرغب بالتواصل بخصوص مشروعي" },
+            promo: { enabled: true, title: "هدية حصرية وفرصة استثمارية ✨", text: "نحن لا نلتقط صوراً فحسب، بل نصنع واجهة بصرية تروي قصة إنجازك الميداني وتضاعف قيمته التسويقية.\n\nاستفد الآن من خصم 50% على تغطية أي مشروع إضافي عند تأكيد الحجز.", ctaText: "استفسر عن الخصم", waText: "مرحباً، أرغب بالاستفسار عن العرض الحصري والخصم الحالي 🎁" },
+            
+            compass: {
+                selectedType: 'villa', neighborhood: "النرجس", sector: 1,
+                villaCount: 1, villaArea: "small",
+                apartmentCount: 1, apartmentArea: "small",
+                buildingApartments: 4, buildingArea: "small",
+                sectorFees: { 1: 70, 2: 100, 3: 120, 4: 150, 5: 150 }
+            },
+
+            packages: {
+                villa: JSON.parse(JSON.stringify(defPackages)),
+                apartment: JSON.parse(JSON.stringify(defPackages)),
+                building: JSON.parse(JSON.stringify(defPackages))
+            },
+
+            pricingMatrix: {
+                villa: {
+                    packages: { 101: 850, 102: 1350, 103: 1950 },
+                    areas: { small: 0, medium: 250, large: 500 },
+                    labels: { small: "حتى 400 م²", medium: "400 - 700 م²", large: "أكثر من 700 م²" },
+                    extraUnitRate: 75
+                },
+                apartment: {
+                    packages: { 101: 600, 102: 950, 103: 1450 },
+                    areas: { small: 0, medium: 150, large: 300 },
+                    labels: { small: "حتى 180 م²", medium: "180 - 300 م²", large: "بنتهاوس >300 م²" },
+                    extraUnitRate: 65
+                },
+                building: {
+                    packages: { 101: 1400, 102: 2100, 103: 2950 },
+                    areas: { small: 0, medium: 400, large: 800 },
+                    labels: { small: "حتى 800 م²", medium: "800 - 1800 م²", large: "أكثر من 1800 م²" },
+                    aptTiers: { 4: 0, 8: 350, 12: 700, 20: 1200 },
+                    aptLabels: { 4: "حتى 4 شقق", 8: "5-8 شقق", 12: "9-14 شقة", 20: "15+ شقة" }
+                }
+            }
+        };
+
+        let state = JSON.parse(JSON.stringify(defaultData));
+
+        const Storage = {
+            key: 'Frameiym_Engine_Matrix_V10',
+            save: () => { try { localStorage.setItem(Storage.key, JSON.stringify(state)); } catch(e){} },
+            load: () => { try { const d = localStorage.getItem(Storage.key); return d ? JSON.parse(d) : null; } catch(e){ return null; } }
+        };
+
+        function sanitizeState(loaded) {
+            if (!loaded || !loaded.packages) return null;
+            
+            if (Array.isArray(loaded.packages)) {
+                const arr = loaded.packages;
+                loaded.packages = {
+                    villa: JSON.parse(JSON.stringify(arr)),
+                    apartment: JSON.parse(JSON.stringify(arr)),
+                    building: JSON.parse(JSON.stringify(arr))
+                };
+            }
+
+            if (loaded.styles) {
+                Object.keys(loaded.styles).forEach(k => {
+                    if (/_card$/.test(k) || k === 'headerSection' || k === 'footerSection' || k === 'promoSection') {
+                        delete loaded.styles[k];
+                    }
+                });
+            }
+            if (!loaded.hidden) loaded.hidden = {};
+            loaded.logo = Object.assign({}, defaultData.logo, loaded.logo || {});
+            loaded.logo.showInCard = false;
+            loaded.footer = Object.assign({}, defaultData.footer, loaded.footer || {});
+            loaded.promo = Object.assign({}, defaultData.promo, loaded.promo || {});
+            loaded.compass = Object.assign({}, defaultData.compass, loaded.compass || {});
+            loaded.pricingMatrix = Object.assign({}, defaultData.pricingMatrix, loaded.pricingMatrix || {});
+            
+            ['villa', 'apartment', 'building'].forEach(t => {
+                if(!loaded.pricingMatrix[t].labels) loaded.pricingMatrix[t].labels = defaultData.pricingMatrix[t].labels;
+            });
+            if(!loaded.pricingMatrix.building.aptLabels) loaded.pricingMatrix.building.aptLabels = defaultData.pricingMatrix.building.aptLabels;
+
+            return loaded;
+        }
+
+        const THEME_FAMILIES = [ { id: 'field', label: 'الخطة الميدانية' }, { id: 'frameiym', label: 'هوية FRAMEIYM' }, { id: 'pearl', label: 'اللؤلؤ الأبيض' }, { id: 'glass', label: 'الزجاج الملون' } ];
+        
+        const THEME_DEFS = {
+            'field': { container: 'bg-[#101220]', extraBgStyle: 'background-image: radial-gradient(circle at 50% 30%, rgba(139,123,247,0.08) 0%, transparent 50%);', grid: 'max-w-7xl', bgHex: '#101220', cardShape: 'rounded-[3rem]', swatch: '#8b7bf7',
+                cardBgPlain: 'bg-[#1a1c2e] shadow-2xl', cardBgFeatured: 'bg-[#1b1d31] shadow-[0_30px_60px_-15px_rgba(139,123,247,0.35)] scale-[1.03] z-10', borderPlain: 'border border-[#2a2d45]', borderFeatured: 'border-2 border-[#8b7bf7]',
+                textPriPlain: 'text-white', textPriFeatured: 'text-white', textSecPlain: 'text-[#a1a1aa]', textSecFeatured: 'text-[#a1a1aa]',
+                btnPlain: 'bg-[#2a2d45] text-white rounded-[2.5rem] hover:bg-[#323652]', btnFeatured: 'bg-gradient-to-r from-[#8b7bf7] to-[#6f5ce0] text-white rounded-[2.5rem] shadow-[0_10px_25px_-5px_rgba(139,123,247,0.4)] hover:opacity-90',
+                badge: 'bg-[#6f5ce0] text-white rounded-full px-6 shadow-lg', iconCheckPlain: 'text-[#8b7bf7]', iconCheckFeatured: 'text-[#8b7bf7]', iconX: 'text-[#2a2d45]', accent: '#8b7bf7', logoFrameBg: 'rgba(255,255,255,0.95)', logoFrameBorder: '1px solid rgba(255,255,255,0.1)',
+                promo: { bg: 'bg-gradient-to-br from-[#1a1c2e] via-[#151726] to-[#202338] shadow-2xl', border: 'border border-[#8b7bf7]/40', text: 'text-white', icon: 'text-[#8b7bf7]', ribbon: 'bg-gradient-to-r from-[#8b7bf7] to-[#6f5ce0] text-white shadow-xl border border-white/10', highlight: 'bg-[#8b7bf7]' },
+                compassBg: 'bg-[#1a1c2e]/90 border border-[#2a2d45] text-white shadow-2xl backdrop-blur-xl', compassTabActive: 'bg-gradient-to-r from-[#8b7bf7] to-[#6f5ce0] text-white shadow-lg shadow-purple-500/30', compassTabInactive: 'bg-[#101220]/60 text-gray-300 hover:bg-[#252840] border border-[#2a2d45]'
+            },
+            'frameiym': { container: 'bg-[#f4f7f9]', extraBgStyle: '', grid: 'max-w-7xl', bgHex: '#f4f7f9', cardShape: 'rounded-[3rem]', swatch: '#F89D53',
+                cardBgPlain: 'bg-white shadow-[0_15px_40px_-15px_rgba(0,0,0,0.05)]', cardBgFeatured: 'bg-[#1D3558] shadow-[0_30px_60px_-15px_rgba(29,53,88,0.3)] scale-[1.03] z-10', borderPlain: 'border border-gray-100', borderFeatured: 'border-2 border-[#F89D53]',
+                textPriPlain: 'text-[#1D3558]', textPriFeatured: 'text-white', textSecPlain: 'text-gray-500', textSecFeatured: 'text-[#FCE2AB]/80',
+                btnPlain: 'bg-[#f4f7f9] text-[#1D3558] rounded-full hover:bg-gray-200', btnFeatured: 'bg-gradient-to-r from-[#F89D53] to-[#e88b40] text-white rounded-full shadow-[0_10px_25px_-5px_rgba(248,157,83,0.4)] hover:opacity-90',
+                badge: 'bg-gradient-to-r from-[#F89D53] to-[#e88b40] text-white rounded-full px-6 shadow-lg', iconCheckPlain: 'text-[#F89D53]', iconCheckFeatured: 'text-[#FCE2AB]', iconX: 'text-gray-200', accent: '#F89D53', logoFrameBg: '#ffffff', logoFrameBorder: '1px solid rgba(29,53,88,0.08)',
+                promo: { bg: 'bg-gradient-to-br from-white via-gray-50 to-[#f0f4f8] shadow-xl shadow-gray-200/50', border: 'border border-[#F89D53]/40', text: 'text-[#1D3558]', icon: 'text-[#F89D53]', ribbon: 'bg-gradient-to-r from-[#F89D53] to-[#e88b40] text-white shadow-xl border border-white/20', highlight: 'bg-[#F89D53]' },
+                compassBg: 'bg-white/95 border border-gray-200 text-[#1D3558] shadow-xl backdrop-blur-xl', compassTabActive: 'bg-gradient-to-r from-[#F89D53] to-[#e88b40] text-white shadow-lg shadow-orange-500/25', compassTabInactive: 'bg-[#f4f7f9] text-[#1D3558] hover:bg-gray-200 border border-gray-200'
+            },
+            'pearl': { container: 'bg-[#f8fafc]', extraBgStyle: '', grid: 'max-w-6xl', bgHex: '#f8fafc', cardShape: 'rounded-[3rem]', swatch: '#38bdf8',
+                cardBgPlain: 'bg-white shadow-[0_15px_40px_-15px_rgba(0,0,0,0.06)]', cardBgFeatured: 'bg-white shadow-[0_30px_60px_-15px_rgba(56,189,248,0.25)] scale-[1.03] z-10', borderPlain: 'border border-slate-100', borderFeatured: 'border-2 border-sky-400',
+                textPriPlain: 'text-slate-800', textPriFeatured: 'text-slate-800', textSecPlain: 'text-slate-500', textSecFeatured: 'text-slate-500',
+                btnPlain: 'bg-slate-50 text-slate-700 border border-slate-100 rounded-full hover:bg-slate-100', btnFeatured: 'bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-full shadow-lg shadow-sky-500/30 hover:opacity-90',
+                badge: 'bg-sky-50 text-sky-600 rounded-full px-6 border border-sky-200 shadow-sm', iconCheckPlain: 'text-sky-500', iconCheckFeatured: 'text-sky-500', iconX: 'text-slate-200', accent: '#38bdf8', logoFrameBg: '#ffffff', logoFrameBorder: '1px solid rgba(15,23,42,0.06)',
+                promo: { bg: 'bg-gradient-to-br from-white to-sky-50 shadow-xl shadow-sky-100/50', border: 'border border-sky-200', text: 'text-slate-800', icon: 'text-sky-500', ribbon: 'bg-gradient-to-r from-sky-400 to-blue-500 text-white shadow-xl', highlight: 'bg-sky-400' },
+                compassBg: 'bg-white border border-slate-200 text-slate-800 shadow-xl backdrop-blur-xl', compassTabActive: 'bg-gradient-to-r from-sky-400 to-blue-500 text-white shadow-lg shadow-sky-400/25', compassTabInactive: 'bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-200'
+            },
+            'glass': { container: 'bg-gradient-to-br from-[#818cf8] via-[#c084fc] to-[#f472b6]', extraBgStyle: '', grid: 'max-w-7xl', cardShape: 'rounded-[3.5rem]', bgHex: '#a5b4fc', swatch: '#a855f7',
+                cardBgPlain: 'glass-panel bg-white/20 shadow-2xl', cardBgFeatured: 'glass-panel bg-white/45 scale-[1.04] z-10 shadow-[0_40px_80px_rgba(0,0,0,0.15)]', borderPlain: 'border border-white/40', borderFeatured: 'border-2 border-white/80',
+                textPriPlain: 'text-gray-900', textPriFeatured: 'text-gray-900', textSecPlain: 'text-gray-800 font-medium', textSecFeatured: 'text-gray-800 font-medium',
+                btnPlain: 'bg-white/40 border border-white/50 text-gray-900 rounded-full hover:bg-white/50', btnFeatured: 'bg-white text-purple-700 rounded-full shadow-xl hover:bg-gray-50',
+                badge: 'bg-white/80 text-purple-700 backdrop-blur-md rounded-full px-6 shadow-lg border border-white/50', iconCheckPlain: 'text-purple-700', iconCheckFeatured: 'text-purple-700', iconX: 'text-gray-900/20', accent: '#a855f7', logoFrameBg: 'rgba(255,255,255,0.9)', logoFrameBorder: '1px solid rgba(255,255,255,0.6)',
+                promo: { bg: 'glass-panel-dark bg-black/20 shadow-2xl', border: 'border border-white/30', text: 'text-white', icon: 'text-pink-400', ribbon: 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-xl border border-white/20', highlight: 'bg-pink-500' },
+                compassBg: 'glass-panel bg-white/35 border border-white/50 text-gray-900 shadow-2xl backdrop-blur-2xl', compassTabActive: 'bg-white text-purple-700 shadow-lg font-bold', compassTabInactive: 'bg-white/20 text-gray-900 hover:bg-white/30 border border-white/30'
+            }
+        };
+
+        function getThemeEngine(theme, isFeatured) {
+            const d = THEME_DEFS[theme] || THEME_DEFS['field'];
+            return {
+                container: d.container, grid: d.grid, cardShape: d.cardShape, cardBg: isFeatured ? d.cardBgFeatured : d.cardBgPlain,
+                border: isFeatured ? d.borderFeatured : d.borderPlain, textPri: isFeatured ? d.textPriFeatured : d.textPriPlain,
+                textSec: isFeatured ? d.textSecFeatured : d.textSecPlain, btn: isFeatured ? d.btnFeatured : d.btnPlain,
+                badge: d.badge, iconCheck: isFeatured ? d.iconCheckFeatured : d.iconCheckPlain, iconX: d.iconX, accent: d.accent,
+                logoFrameBg: d.logoFrameBg, logoFrameBorder: d.logoFrameBorder, extraBgStyle: d.extraBgStyle, bgHex: d.bgHex, promo: d.promo,
+                headerText: d.textPriPlain, compassBg: d.compassBg, compassTabActive: d.compassTabActive, compassTabInactive: d.compassTabInactive
+            };
+        }
+
+        function getAlign(val) { return val === 'right' ? 'flex-start' : val === 'left' ? 'flex-end' : 'center'; }
+        
+        function getElStyle(id, baseStyle = '', isTextElement = true) {
+            let str = baseStyle;
+            if (state.styles && state.styles[id]) {
+                const s = state.styles[id];
+                if (s.color) str += `color: ${s.color} !important; `;
+                if (s.backgroundColor) { str += `background-color: ${s.backgroundColor} !important; border-color: ${s.backgroundColor} !important; `; if (isTextElement) str += `padding: 2px 10px !important; border-radius: 8px !important; `; }
+                if (s.fontSize) str += `font-size: ${s.fontSize} !important; `;
+            }
+            return str ? `style="${str}"` : '';
+        }
+        
+        function getElClass(id, baseClass = '') {
+            let cls = baseClass;
+            if (state.styles && state.styles[id] && state.styles[id].isGolden) {
+                cls += ' golden-choice-item';
+            }
+            return cls;
+        }
+
+        function isHidden(id) { return !!(state.hidden && state.hidden[id]); }
+        function hiddenAttr(id) { return isHidden(id) ? 'data-hidden="true"' : ''; }
+
+        function getCalculatedPackagePrice(pkgId) {
+            const c = state.compass;
+            const pm = state.pricingMatrix;
+            const transportFee = c.sectorFees[c.sector] || 70;
+
+            if (c.selectedType === 'villa') {
+                const base = pm.villa.packages[pkgId] || 850;
+                const areaExtra = pm.villa.areas[c.villaArea] || 0;
+                const count = parseInt(c.villaCount) || 1;
+                const extraRate = (pm.villa.extraUnitRate || 75) / 100;
+                return Math.round((base + ((count - 1) * base * extraRate)) + areaExtra + transportFee);
+            } 
+            else if (c.selectedType === 'apartment') {
+                const base = pm.apartment.packages[pkgId] || 600;
+                const areaExtra = pm.apartment.areas[c.apartmentArea] || 0;
+                const count = parseInt(c.apartmentCount) || 1;
+                const extraRate = (pm.apartment.extraUnitRate || 65) / 100;
+                return Math.round((base + ((count - 1) * base * extraRate)) + areaExtra + transportFee);
+            } 
+            else if (c.selectedType === 'building') {
+                const base = pm.building.packages[pkgId] || 1400;
+                const areaExtra = pm.building.areas[c.buildingArea] || 0;
+                const aptTierExtra = pm.building.aptTiers[c.buildingApartments] || 0;
+                return Math.round(base + areaExtra + aptTierExtra + transportFee);
+            }
+            return 0;
+        }
+
+        function getBasePackagePrice(pkgId) {
+            const c = state.compass;
+            const pm = state.pricingMatrix;
+            const transportFee = c.sectorFees[c.sector] || 70;
+
+            if (c.selectedType === 'villa') {
+                return (pm.villa.packages[pkgId] || 850) + transportFee;
+            } 
+            else if (c.selectedType === 'apartment') {
+                return (pm.apartment.packages[pkgId] || 600) + transportFee;
+            } 
+            else if (c.selectedType === 'building') {
+                return (pm.building.packages[pkgId] || 1400) + transportFee;
+            }
+            return 0;
+        }
+
+        function formatNumberWithCommas(x) { return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+        function generateCustomWaMessage(pkgName, finalPrice) {
+            const c = state.compass;
+            const pm = state.pricingMatrix;
+            const nName = c.neighborhood || "الرياض";
+            
+            let typeDetails = '';
+            if (c.selectedType === 'villa') {
+                typeDetails = `فلة (العدد: ${c.villaCount} | المساحة: ${pm.villa.labels[c.villaArea]})`;
+            } else if (c.selectedType === 'apartment') {
+                typeDetails = `شقة (العدد: ${c.apartmentCount} | المساحة: ${pm.apartment.labels[c.apartmentArea]})`;
+            } else if (c.selectedType === 'building') {
+                typeDetails = `عمارة كاملة (عدد الشقق: ${pm.building.aptLabels[c.buildingApartments]} | المساحة: ${pm.building.labels[c.buildingArea]})`;
+            }
+
+            return `مرحباً استوديو FRAMEIYM 📸\nأرغب في حجز [${pkgName}] لتغطية مشروعي:\n\n🏡 تفاصيل المشروع:\n- النوع: ${typeDetails}\n- الموقع: حي ${nName}\n- السعر الإجمالي للباقة: ${finalPrice} ريال\n\nيرجى تأكيد التوفر وتنسيق موعد التصوير.`;
+        }
+
+        function generateCompassHTML(isExport = false) {
+            const theme = getThemeEngine(state.theme, false);
+            const c = state.compass;
+            const pm = state.pricingMatrix;
+
+            const types = [
+                { id: 'villa', label: 'فلة', icon: 'home' },
+                { id: 'apartment', label: 'شقة', icon: 'building-2' },
+                { id: 'building', label: 'عمارة', icon: 'boxes' },
+                { id: 'large', label: 'مشاريع كبيرة', icon: 'landmark' },
+                { id: 'other', label: 'مشاريع أخرى', icon: 'file-text' }
+            ];
+
+            const tabsHtml = types.map(t => {
+                const isActive = c.selectedType === t.id;
+                const activeCls = isActive ? theme.compassTabActive : theme.compassTabInactive;
+                return `
+                <button type="button" onclick="setCompassType('${t.id}')" class="compass-tab ${isActive ? 'active' : ''} flex-1 min-w-[105px] py-3.5 px-3 rounded-2xl flex items-center justify-center gap-2 font-readex font-bold text-xs md:text-sm transition-all duration-300 ${activeCls}">
+                    <i data-lucide="${t.icon}" class="w-4 h-4 shrink-0"></i>
+                    <span>${t.label}</span>
+                </button>`;
+            }).join('');
+
+            let dynamicFields = '';
+
+            if (c.selectedType === 'villa') {
+                dynamicFields = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <div>
+                        <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center gap-1"><i data-lucide="hash" class="w-3.5 h-3.5 text-fieldAccent"></i> عدد الفلل:</label>
+                        <select onchange="updateCompassParam('villaCount', this.value)" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent">
+                            <option value="1" ${c.villaCount == 1 ? 'selected' : ''}>فلة واحدة (1)</option>
+                            <option value="2" ${c.villaCount == 2 ? 'selected' : ''}>فلتين (2) - خصم على الفلة الإضافية</option>
+                            <option value="3" ${c.villaCount == 3 ? 'selected' : ''}>3 فلل</option>
+                            <option value="4" ${c.villaCount == 4 ? 'selected' : ''}>4 فلل فأكثر</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center gap-1"><i data-lucide="maximize" class="w-3.5 h-3.5 text-fieldAccent"></i> مساحة الفلة:</label>
+                        <select onchange="updateCompassParam('villaArea', this.value)" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent">
+                            <option value="small" ${c.villaArea === 'small' ? 'selected' : ''}>${pm.villa.labels.small}</option>
+                            <option value="medium" ${c.villaArea === 'medium' ? 'selected' : ''}>${pm.villa.labels.medium}</option>
+                            <option value="large" ${c.villaArea === 'large' ? 'selected' : ''}>${pm.villa.labels.large}</option>
+                        </select>
+                    </div>
+                </div>`;
+            } else if (c.selectedType === 'apartment') {
+                dynamicFields = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <div>
+                        <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center gap-1"><i data-lucide="hash" class="w-3.5 h-3.5 text-fieldAccent"></i> عدد الشقق:</label>
+                        <select onchange="updateCompassParam('apartmentCount', this.value)" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent">
+                            <option value="1" ${c.apartmentCount == 1 ? 'selected' : ''}>شقة واحدة (1)</option>
+                            <option value="2" ${c.apartmentCount == 2 ? 'selected' : ''}>شقتين (2) - خصم للشقق الإضافية</option>
+                            <option value="3" ${c.apartmentCount == 3 ? 'selected' : ''}>3 شقق</option>
+                            <option value="4" ${c.apartmentCount == 4 ? 'selected' : ''}>4 شقق فأكثر</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center gap-1"><i data-lucide="maximize" class="w-3.5 h-3.5 text-fieldAccent"></i> مساحة الشقة:</label>
+                        <select onchange="updateCompassParam('apartmentArea', this.value)" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent">
+                            <option value="small" ${c.apartmentArea === 'small' ? 'selected' : ''}>${pm.apartment.labels.small}</option>
+                            <option value="medium" ${c.apartmentArea === 'medium' ? 'selected' : ''}>${pm.apartment.labels.medium}</option>
+                            <option value="large" ${c.apartmentArea === 'large' ? 'selected' : ''}>${pm.apartment.labels.large}</option>
+                        </select>
+                    </div>
+                </div>`;
+            } else if (c.selectedType === 'building') {
+                dynamicFields = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                    <div>
+                        <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center gap-1"><i data-lucide="layers" class="w-3.5 h-3.5 text-fieldAccent"></i> عدد الشقق بالعمارة:</label>
+                        <select onchange="updateCompassParam('buildingApartments', this.value)" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent">
+                            <option value="4" ${c.buildingApartments == 4 ? 'selected' : ''}>${pm.building.aptLabels[4]}</option>
+                            <option value="8" ${c.buildingApartments == 8 ? 'selected' : ''}>${pm.building.aptLabels[8]}</option>
+                            <option value="12" ${c.buildingApartments == 12 ? 'selected' : ''}>${pm.building.aptLabels[12]}</option>
+                            <option value="20" ${c.buildingApartments == 20 ? 'selected' : ''}>${pm.building.aptLabels[20]}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center gap-1"><i data-lucide="maximize" class="w-3.5 h-3.5 text-fieldAccent"></i> إجمالي مساحة البناء:</label>
+                        <select onchange="updateCompassParam('buildingArea', this.value)" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent">
+                            <option value="small" ${c.buildingArea === 'small' ? 'selected' : ''}>${pm.building.labels.small}</option>
+                            <option value="medium" ${c.buildingArea === 'medium' ? 'selected' : ''}>${pm.building.labels.medium}</option>
+                            <option value="large" ${c.buildingArea === 'large' ? 'selected' : ''}>${pm.building.labels.large}</option>
+                        </select>
+                    </div>
+                </div>`;
+            } else {
+                dynamicFields = `<div class="text-sm font-alexandria opacity-80 mt-2 font-medium"><i data-lucide="sparkles" class="w-4 h-4 inline-block ml-1"></i> تم تفعيل وضع المشاريع الخاصة. يرجى التوجه للنموذج المخصص بالأسفل.</div>`;
+            }
+
+            const autoCalcText = isExport ? '' : '<span class="text-[10px] opacity-60">احتساب تلقائي للتغطية</span>';
+
+            const neighborhoodSelector = `
+            <div class="w-full relative">
+                <label class="block text-[11px] font-bold opacity-75 font-readex mb-1.5 flex items-center justify-between">
+                    <span class="flex items-center gap-1.5"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-fieldAccent"></i> الحي في الرياض:</span>
+                    ${autoCalcText}
+                </label>
+                <div class="relative">
+                    <input type="text" id="neighborhood-search-input" value="${c.neighborhood}" placeholder="ابحث عن اسم الحي..." onfocus="showNeighborhoodDropdown()" oninput="filterNeighborhoods(this.value)" autocomplete="off" class="w-full bg-black/10 dark:bg-white/10 border border-current/15 rounded-xl py-2.5 px-3.5 pl-9 text-xs md:text-sm font-alexandria font-semibold outline-none focus:border-fieldAccent transition-colors">
+                    <div class="absolute left-3 top-1/2 -translate-y-1/2 text-current opacity-40 pointer-events-none"><i data-lucide="search" class="w-4 h-4"></i></div>
+                </div>
+                <div id="neighborhood-dropdown-list" class="hidden absolute top-full mt-1.5 right-0 left-0 bg-[#161828] text-white border border-fieldBorder rounded-2xl shadow-2xl z-50 custom-select-dropdown p-1.5 space-y-1 backdrop-blur-xl"></div>
+            </div>`;
+
+            return `
+            <div class="w-full ${theme.grid} mb-12 relative z-20">
+                <div class="${theme.compassBg} rounded-[2.5rem] p-6 md:p-8 flex flex-col gap-5 transition-all duration-500">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-current/10 pb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-fieldAccent/15 text-fieldAccent flex items-center justify-center shrink-0">
+                                <i data-lucide="compass" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-readex font-bold text-base md:text-lg leading-tight">بوصلة المشروع والتسعير التكيفي</h3>
+                                <p class="font-alexandria text-[11px] opacity-70">اختر تفاصيل مشروعك وموقعه لتتأقلم أسعار الباقات فوراً وبدقة</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full">${tabsHtml}</div>
+                    <div class="flex flex-col lg:flex-row gap-4 items-start">
+                        <div class="flex-1 w-full">${dynamicFields}</div>
+                        <div class="w-full lg:w-72 shrink-0">${neighborhoodSelector}</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function generateCustomProjectForm(type, theme) {
+            const isLarge = type === 'large';
+            const title = isLarge ? "طلب تسعير استثماري لمشروع كبير" : "طلب تسعير لمشروع خاص";
+            const desc = isLarge ? "نقدم خصومات حصرية للمشاريع الكبرى. يرجى تزويدنا بالتفاصيل لنمنحك أفضل عرض." : "نصمم لك باقة بصرية مخصصة تناسب طبيعة مشروعك الفريدة.";
+            
+            return `
+            <div class="w-full max-w-3xl mx-auto mb-24 relative z-10 ${theme.compassBg} ${theme.border} rounded-[2.5rem] p-8 md:p-12 shadow-2xl transition-all duration-500">
+                <div class="text-center mb-10">
+                    <div class="w-24 h-24 mx-auto bg-gray-500/10 rounded-3xl flex items-center justify-center mb-6 transform transition-transform hover:scale-110 hover:-rotate-3 duration-300 shadow-sm border border-black/5">
+                        <i data-lucide="${isLarge ? 'building' : 'lightbulb'}" class="w-12 h-12 opacity-90" style="color: ${theme.accent}"></i>
+                    </div>
+                    <h3 class="font-readex font-extrabold text-3xl md:text-4xl mb-4 ${theme.textPri} tracking-tight">${title}</h3>
+                    <p class="font-alexandria text-sm md:text-base opacity-75 leading-relaxed max-w-xl mx-auto ${theme.textPri}">${desc}</p>
+                </div>
+                
+                <div class="space-y-6 max-w-2xl mx-auto">
+                    <div class="group">
+                        <label class="block text-[13px] font-bold opacity-80 font-readex mb-2.5 transition-colors" style="color: ${theme.accent}">اسم الجهة أو العميل:</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none opacity-50 transition-opacity">
+                                <i data-lucide="user" class="w-5 h-5 ${theme.textPri}"></i>
+                            </div>
+                            <input type="text" id="custom-client-name" placeholder="الاسم الكريم أو الجهة..." 
+                                class="w-full bg-gray-500/10 border-2 border-transparent rounded-2xl py-4 pr-12 pl-5 text-sm font-alexandria outline-none transition-all duration-300 focus:bg-gray-500/20 hover:bg-gray-500/20 ${theme.textPri}" 
+                                onfocus="this.style.borderColor='${theme.accent}'" onblur="this.style.borderColor='transparent'">
+                        </div>
+                    </div>
+                    
+                    <div class="group">
+                        <label class="block text-[13px] font-bold opacity-80 font-readex mb-2.5 transition-colors" style="color: ${theme.accent}">تفاصيل المشروع:</label>
+                        <div class="relative">
+                            <div class="absolute top-4 right-0 flex items-start pr-4 pointer-events-none opacity-50 transition-opacity">
+                                <i data-lucide="align-right" class="w-5 h-5 ${theme.textPri}"></i>
+                            </div>
+                            <textarea id="custom-project-details" rows="5" placeholder="${isLarge ? 'مثال: برج تجاري، مجمع سكني... مع ذكر المساحة التقريبية' : 'اكتب نبذة عن مشروعك ومتطلباتك البصرية...'}" 
+                                class="w-full bg-gray-500/10 border-2 border-transparent rounded-2xl py-4 pr-12 pl-5 text-sm font-alexandria outline-none transition-all duration-300 resize-none focus:bg-gray-500/20 hover:bg-gray-500/20 ${theme.textPri}"
+                                onfocus="this.style.borderColor='${theme.accent}'" onblur="this.style.borderColor='transparent'"></textarea>
+                        </div>
+                    </div>
+                    
+                    <button onclick="sendCustomProjectWa('${type}')" class="w-full font-readex font-bold text-lg py-5 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex justify-center items-center gap-3 mt-8 relative overflow-hidden group/btn cursor-pointer" style="background-color: ${theme.accent}; color: white; border: none;">
+                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                        <i data-lucide="send" class="w-6 h-6 animate-pulse"></i> إرسال الطلب ومناقشة العرض
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function sendCustomProjectWa(type) {
+            const nameEl = document.getElementById('custom-client-name');
+            const detEl = document.getElementById('custom-project-details');
+            const name = nameEl ? nameEl.value : 'عميل';
+            const details = detEl ? detEl.value : 'لم يتم كتابة تفاصيل';
+            const nName = state.compass.neighborhood || "الرياض";
+            
+            let msg = `مرحباً استوديو FRAMEIYM 📸\n`;
+            msg += type === 'large' ? `لدينا مشروع كبير ونرغب بتصميم عرض مخصص.\n\n` : `نرغب بتصميم عرض لتغطية مشروع خاص.\n\n`;
+            msg += `👤 الاسم/الجهة: ${name}\n📍 الحي: ${nName} (الرياض)\n📋 التفاصيل:\n${details}\n\nنرجو التواصل معنا لمناقشة العرض.`;
+            
+            window.open(`https://wa.me/${state.whatsapp.replace(/\+/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function generatePackage(pkg, isLive) {
+            const isFeatured = !!pkg.featured;
+            const theme = getThemeEngine(state.theme, isFeatured);
+            const ed = isLive ? 'contenteditable="true"' : '';
+
+            const currentFinalPrice = getCalculatedPackagePrice(pkg.id);
+            const finalPriceFormatted = formatNumberWithCommas(currentFinalPrice);
+            
+            const baseFinalPrice = getBasePackagePrice(pkg.id);
+            let rawOrigPrice = parseInt((pkg.originalPrice || '0').replace(/,/g, '')) || 0;
+            let scaleRatio = 1;
+            
+            if (baseFinalPrice > 0 && rawOrigPrice > 0) {
+                scaleRatio = currentFinalPrice / baseFinalPrice;
+                rawOrigPrice = Math.round(rawOrigPrice * scaleRatio);
+            }
+            const displayOrigPrice = rawOrigPrice > 0 ? formatNumberWithCommas(rawOrigPrice) : pkg.originalPrice;
+
+            let discountHtml = '';
+            if (rawOrigPrice > currentFinalPrice) {
+                const ratio = Math.round((1 - (currentFinalPrice / rawOrigPrice)) * 100);
+                if (ratio > 0) discountHtml = `<span class="bg-red-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-full mr-3 shadow-md shrink-0">وفر ${ratio}%</span>`;
+            }
+
+            const pkgControls = isLive ? `<div class="floating-toolbar card-toolbar hide-on-export"><button onclick="toggleFeatured(${pkg.id})" class="tool-btn ${isFeatured ? '!text-amber-400' : ''}"><i data-lucide="sparkles" class="w-4 h-4"></i></button><button onclick="editBadge(${pkg.id})" class="tool-btn"><i data-lucide="tag" class="w-4 h-4 text-pink-400"></i></button><button onclick="editWaText(${pkg.id})" class="tool-btn"><i data-lucide="message-square-text" class="w-4 h-4 text-emerald-400"></i></button><button onclick="resetPkg(${pkg.id})" class="tool-btn warning"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button><div class="w-px h-6 bg-current/20 mx-1 my-auto"></div><button onclick="movePkg(${pkg.id}, 1)" class="tool-btn"><i data-lucide="arrow-right" class="w-4 h-4"></i></button><button onclick="movePkg(${pkg.id}, -1)" class="tool-btn"><i data-lucide="arrow-left" class="w-4 h-4"></i></button><button onclick="delPkg(${pkg.id})" class="tool-btn danger"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>` : '';
+
+            const badgeContent = (pkg.badge||'').trim();
+            const badgeId = `pkg_${pkg.id}_badge`;
+            const badgeHtml = (isLive || (badgeContent && !isHidden(badgeId))) ? `<div class="absolute -top-4 right-1/2 translate-x-1/2 ${getElClass(badgeId, theme.badge)} ${isFeatured?'shadow-xl scale-105':''} py-1.5 text-[13px] font-bold font-readex whitespace-nowrap z-20 flex items-center gap-1 empty-hide transition-all" ${ed} data-style-id="${badgeId}" data-field="badge" data-placeholder="وسم مميز" ${hiddenAttr(badgeId)} ${getElStyle(badgeId, '', false)}>${isFeatured?'<i data-lucide="star" class="w-3.5 h-3.5 shrink-0"></i>':''}<span>${pkg.badge}</span></div>` : '';
+            const featuredRibbon = (isFeatured && !badgeContent && !isHidden(badgeId)) ? `<div class="absolute -top-4 right-1/2 translate-x-1/2 featured-ribbon ${theme.badge} text-[12px] font-bold font-readex whitespace-nowrap z-20 py-1.5 shadow-lg pointer-events-none flex items-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5"></i> الأكثر تميزاً</div>` : '';
+
+            const origPriceContent = (pkg.originalPrice||'').trim();
+            const origPriceId = `pkg_${pkg.id}_originalPrice`;
+            const origPriceHtml = (isLive || (origPriceContent && !isHidden(origPriceId))) ? `<span class="font-alexandria text-base line-through opacity-40 inline-block font-medium empty-hide transition-all ${getElClass(origPriceId)}" ${ed} data-style-id="${origPriceId}" data-field="originalPrice" data-placeholder="السعر القديم" ${hiddenAttr(origPriceId)} ${getElStyle(origPriceId)}>${displayOrigPrice}</span>` : '';
+            const topPriceRow = (isLive || ((origPriceContent && !isHidden(origPriceId)) || discountHtml)) ? `<div class="flex items-center w-full gap-1">${origPriceHtml}${discountHtml}</div>` : '';
+            
+            const priceRowHtml = `<div class="flex items-end gap-2 price-row"><span class="font-readex font-extrabold text-5xl leading-none transition-all ${theme.textPri}">${finalPriceFormatted}</span><span class="font-alexandria text-base opacity-60 font-medium pb-1">ريال</span></div>`;
+            const priceCommentContent = (pkg.priceComment||'').trim();
+            const priceCommentId = `pkg_${pkg.id}_priceComment`;
+            const priceCommentHtml = (isLive || (priceCommentContent && !isHidden(priceCommentId))) ? `<div class="font-alexandria text-sm ${theme.textSec} font-medium empty-hide inline-block transition-all break-words min-w-0 text-right w-full ${getElClass(priceCommentId)}" ${ed} data-style-id="${priceCommentId}" data-field="priceComment" data-placeholder="ملاحظة السعر" ${hiddenAttr(priceCommentId)} ${getElStyle(priceCommentId)}>${pkg.priceComment}</div>` : '';
+
+            const priceContainer = (topPriceRow || priceRowHtml || priceCommentHtml) ? `<div class="relative z-10 flex flex-col gap-2 mb-8 border-b border-current/10 pb-6 empty-hide items-start">${topPriceRow}${priceRowHtml}${priceCommentHtml}</div>` : '';
+
+            const dynamicWaLink = `https://wa.me/${state.whatsapp.replace(/\+/g,'')}?text=${encodeURIComponent(generateCustomWaMessage(pkg.name, finalPriceFormatted))}`;
+            const btnId = `pkg_${pkg.id}_buttonText`;
+            const btnHtml = isLive
+                ? `<div class="${getElClass(btnId, theme.btn)} font-readex font-bold py-4 px-6 w-full text-center text-[15px] transition-all flex justify-center btn-container"><span class="empty-hide transition-all" ${ed} data-style-id="${btnId}" data-field="buttonText" data-placeholder="نص الزر" ${hiddenAttr(btnId)} ${getElStyle(btnId)}>${pkg.buttonText}</span></div>`
+                : (isHidden(btnId) ? '' : `<a href="${dynamicWaLink}" target="_blank" class="${getElClass(btnId, theme.btn)} font-readex font-bold py-4 px-6 w-full text-center text-[15px] transition-all block" ${getElStyle(btnId, '', false)}>${pkg.buttonText}</a>`);
+
+            const nameContent = (pkg.name||'').trim();
+            const nameId = `pkg_${pkg.id}_name`;
+            const nameHtml = (isLive || (nameContent && !isHidden(nameId))) ? `<h3 class="relative z-10 font-readex font-bold text-3xl tracking-tight block w-full text-right break-words min-w-0 ${(nameContent && !isHidden(nameId)) ? 'mb-6' : 'mb-0'} empty-hide transition-all ${getElClass(nameId)}" ${ed} data-style-id="${nameId}" data-field="name" data-placeholder="اسم الباقة" ${hiddenAttr(nameId)} ${getElStyle(nameId)}>${pkg.name}</h3>` : '';
+
+            return `
+            <div class="relative flex flex-col h-full ${theme.cardShape} p-10 md:p-12 transition-all duration-500 ${theme.cardBg} ${theme.border} ${theme.textPri} group/card" data-pkg-id="${pkg.id}">
+                ${pkgControls} ${featuredRibbon} ${badgeHtml} ${nameHtml} ${priceContainer}
+                <div class="relative z-10 flex-1 flex flex-col gap-5 mb-10 items-start w-full">
+                    ${pkg.features.map(f => {
+                        if(!isLive && !f.text.trim()) return '';
+                        const featId = `pkg_${pkg.id}_feature_${f.id}`;
+                        return `<div class="flex items-start gap-3 group/feat relative w-full ${getElClass(featId)}"><button ${isLive ? `onclick="togFeat(${pkg.id}, ${f.id})"` : 'disabled'} class="mt-0.5 shrink-0 ${f.included ? theme.iconCheck : theme.iconX} outline-none transition-colors"><i data-lucide="${f.included ? 'check-circle-2' : 'circle'}" class="w-5 h-5"></i></button><span class="font-alexandria text-[15px] flex-1 min-w-0 break-words text-right leading-relaxed font-medium opacity-90 empty-hide transition-all block w-full" ${ed} data-style-id="${featId}" data-field="feature-${f.id}" data-placeholder="ميزة..." ${hiddenAttr(featId)} ${getElStyle(featId)}>${f.text}</span>${isLive ? `<div class="floating-toolbar feat-toolbar hide-on-export"><button onclick="toggleGoldenChoiceForId('${featId}')" class="tool-btn gold" title="الخيار الذهبي (تمييز فخم)"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i></button><button onclick="movFeat(${pkg.id}, ${f.id}, -1)" class="tool-btn"><i data-lucide="chevron-up" class="w-3.5 h-3.5"></i></button><button onclick="movFeat(${pkg.id}, ${f.id}, 1)" class="tool-btn"><i data-lucide="chevron-down" class="w-3.5 h-3.5"></i></button><button onclick="delFeat(${pkg.id}, ${f.id})" class="tool-btn danger mt-1"><i data-lucide="x" class="w-3.5 h-3.5"></i></button></div>` : ''}</div>`;
+                    }).join('')}
+                    ${isLive ? `<button onclick="addFeat(${pkg.id})" class="text-[13px] font-bold opacity-40 hover:opacity-100 mt-2 flex items-center justify-center gap-1.5 w-full hide-on-export transition-opacity bg-current/5 py-3 rounded-[2rem] border border-dashed border-current/20"><i data-lucide="plus" class="w-4 h-4"></i> إضافة ميزة</button>` : ''}
+                </div>
+                <div class="relative z-10 mt-auto w-full">${btnHtml}</div>
+            </div>`;
+        }
+
+        function getCurPkgs() { return state.packages[state.compass.selectedType] || []; }
+
+        function renderUI(isExport = false) {
+            const container = document.getElementById('live-preview');
+            const theme = getThemeEngine(state.theme, false);
+            
+            if(!isExport) {
+                document.getElementById('whatsapp-input').value = state.whatsapp;
+                document.getElementById('toggle-promo').checked = state.promo.enabled;
+                document.getElementById('toggle-logo-board').checked = state.logo.showInBoard;
+
+                const pm = state.pricingMatrix;
+                document.getElementById('v-pkg-101').value = pm.villa.packages[101]; document.getElementById('v-pkg-102').value = pm.villa.packages[102]; document.getElementById('v-pkg-103').value = pm.villa.packages[103];
+                document.getElementById('v-area-med').value = pm.villa.areas.medium; document.getElementById('v-area-lrg').value = pm.villa.areas.large; document.getElementById('v-extra-unit').value = pm.villa.extraUnitRate;
+                document.getElementById('v-lbl-sml').value = pm.villa.labels.small; document.getElementById('v-lbl-med').value = pm.villa.labels.medium; document.getElementById('v-lbl-lrg').value = pm.villa.labels.large;
+                document.getElementById('a-pkg-101').value = pm.apartment.packages[101]; document.getElementById('a-pkg-102').value = pm.apartment.packages[102]; document.getElementById('a-pkg-103').value = pm.apartment.packages[103];
+                document.getElementById('a-area-med').value = pm.apartment.areas.medium; document.getElementById('a-area-lrg').value = pm.apartment.areas.large; document.getElementById('a-extra-unit').value = pm.apartment.extraUnitRate;
+                document.getElementById('a-lbl-sml').value = pm.apartment.labels.small; document.getElementById('a-lbl-med').value = pm.apartment.labels.medium; document.getElementById('a-lbl-lrg').value = pm.apartment.labels.large;
+                document.getElementById('b-pkg-101').value = pm.building.packages[101]; document.getElementById('b-pkg-102').value = pm.building.packages[102]; document.getElementById('b-pkg-103').value = pm.building.packages[103];
+                document.getElementById('b-apt-8').value = pm.building.aptTiers[8]; document.getElementById('b-apt-12').value = pm.building.aptTiers[12]; document.getElementById('b-apt-20').value = pm.building.aptTiers[20];
+                document.getElementById('b-area-med').value = pm.building.areas.medium; document.getElementById('b-area-lrg').value = pm.building.areas.large;
+                document.getElementById('b-lbl-apt4').value = pm.building.aptLabels[4]; document.getElementById('b-lbl-apt8').value = pm.building.aptLabels[8]; document.getElementById('b-lbl-apt12').value = pm.building.aptLabels[12]; document.getElementById('b-lbl-apt20').value = pm.building.aptLabels[20];
+                document.getElementById('b-lbl-sml').value = pm.building.labels.small; document.getElementById('b-lbl-med').value = pm.building.labels.medium; document.getElementById('b-lbl-lrg').value = pm.building.labels.large;
+                document.getElementById('sec1-fee').value = state.compass.sectorFees[1]; document.getElementById('sec2-fee').value = state.compass.sectorFees[2]; document.getElementById('sec3-fee').value = state.compass.sectorFees[3]; document.getElementById('sec4-fee').value = state.compass.sectorFees[4]; document.getElementById('sec5-fee').value = state.compass.sectorFees[5];
+                document.getElementById('framew-logo-board').value = state.logo.boardFrameW; document.getElementById('val-logo-board-framew').innerText = state.logo.boardFrameW;
+                document.getElementById('frameh-logo-board').value = state.logo.boardFrameH; document.getElementById('val-logo-board-frameh').innerText = state.logo.boardFrameH;
+                document.getElementById('zoom-logo-board').value = state.logo.boardZoom; document.getElementById('val-logo-board-zoom').innerText = state.logo.boardZoom;
+                renderThemePicker();
+            }
+
+            container.className = `min-h-full w-full flex flex-col items-center py-16 px-4 md:px-10 transition-all duration-700 ${theme.container}`;
+            container.style.cssText = theme.extraBgStyle;
+
+            let logoBoardHtml = '';
+            if (state.logo.src && state.logo.showInBoard) {
+                logoBoardHtml = `<div class="w-full flex" style="justify-content: ${getAlign(state.logo.boardAlign)}; margin-bottom: ${state.logo.boardSpace}px;">
+                    <div class="logo-frame" style="width: ${state.logo.boardFrameW}px; height: ${state.logo.boardFrameH}px; border-radius: ${state.logo.boardRadius}px; background: ${theme.logoFrameBg}; border: ${theme.logoFrameBorder}; box-shadow: 0 15px 35px -10px rgba(0,0,0,0.25);">
+                        <img src="${state.logo.src}" style="max-width: 82%; max-height: 82%; object-fit: contain; transform: scale(${(state.logo.boardZoom||100)/100});">
+                    </div>
+                </div>`;
+            }
+
+            const headerAlign = state.logo.boardAlign === 'right' ? 'text-right items-start' : state.logo.boardAlign === 'left' ? 'text-left items-end' : 'text-center items-center';
+            const ed = isExport ? '' : 'contenteditable="true"';
+            
+            const titleHtml = (isExport && (!state.header.title.trim() || isHidden('headerTitle'))) ? '' : `<h1 class="font-readex font-extrabold text-5xl md:text-6xl lg:text-7xl tracking-tight w-full inline-block ${(state.header.title.trim() && !isHidden('headerTitle')) ? 'mb-4' : 'mb-0'} empty-hide transition-all break-words min-w-0 ${getElClass('headerTitle')}" ${ed} data-style-id="headerTitle" data-field="headerTitle" data-placeholder="عنوان اللوحة" ${hiddenAttr('headerTitle')} ${getElStyle('headerTitle')}>${state.header.title}</h1>`;
+            const subTitleHtml = (isExport && (!state.header.subtitle.trim() || isHidden('headerSubtitle'))) ? '' : `<h2 class="font-alexandria text-xl md:text-2xl opacity-70 font-medium leading-relaxed max-w-3xl w-full inline-block empty-hide transition-all break-words min-w-0 ${getElClass('headerSubtitle')}" ${ed} data-style-id="headerSubtitle" data-field="headerSubtitle" data-placeholder="وصف أو نبذة" ${hiddenAttr('headerSubtitle')} ${getElStyle('headerSubtitle')}>${state.header.subtitle}</h2>`;
+
+            const headerHTML = `<div class="w-full ${theme.grid} mb-12 ${theme.headerText} flex flex-col ${headerAlign} relative z-10 group/header">${logoBoardHtml}${titleHtml}${subTitleHtml}</div>`;
+            const compassHTML = generateCompassHTML(isExport);
+
+            let mainContentHTML = '';
+            const cType = state.compass.selectedType;
+            if (['villa', 'apartment', 'building'].includes(cType)) {
+                mainContentHTML = `
+                <div class="w-full ${theme.grid} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-24 relative z-10">
+                    ${getCurPkgs().map(p => generatePackage(p, !isExport)).join('')}
+                    ${!isExport ? `
+                    <button onclick="addPkg()" class="hide-on-export border-2 border-dashed ${theme.border || 'border-current/20'} ${theme.cardShape} flex flex-col items-center justify-center p-8 opacity-40 hover:opacity-100 hover:bg-current/5 transition-all min-h-[450px] cursor-pointer group ${theme.headerText}">
+                        <div class="w-16 h-16 rounded-full bg-current/10 flex items-center justify-center mb-4 text-current group-hover:scale-110 transition-transform"><i data-lucide="plus" class="w-8 h-8"></i></div>
+                        <span class="font-readex font-bold text-lg">إضافة باقة جديدة هنا</span>
+                    </button>` : ''}
+                </div>`;
+            } else {
+                mainContentHTML = generateCustomProjectForm(cType, theme);
+            }
+
+            let promoHTML = '';
+            if (state.promo.enabled) {
+                const p = theme.promo;
+                const pTitle = (!isExport || (state.promo.title.trim() && !isHidden('promoTitle'))) ? `<h3 class="font-readex font-extrabold text-3xl md:text-4xl flex items-center gap-4 break-words min-w-0 ${state.promo.title.trim() ? 'mb-2' : 'mb-0'}"><i data-lucide="gem" class="w-10 h-10 shrink-0 ${p.icon} drop-shadow-md"></i> <span ${ed} data-style-id="promoTitle" data-field="promoTitle" class="empty-hide transition-all inline-block ${getElClass('promoTitle')}" data-placeholder="عنوان العرض الفاخر" ${hiddenAttr('promoTitle')} ${getElStyle('promoTitle')}>${state.promo.title}</span></h3>` : '';
+                const pTextHtml = (!isExport || (state.promo.text.trim() && !isHidden('promoText'))) ? `<p class="font-alexandria text-xl md:text-2xl leading-[1.8] opacity-90 font-medium inline-block break-words min-w-0 w-full text-right empty-hide transition-all ${getElClass('promoText')}" ${ed} data-style-id="promoText" data-field="promoText" data-placeholder="تفاصيل العرض والاستثمار" ${hiddenAttr('promoText')} ${getElStyle('promoText')}>${state.promo.text.replace(/\n/g, '<br>')}</p>` : '';
+                const pCtaInner = `<i data-lucide="message-circle" class="w-5 h-5 shrink-0"></i> <span class="empty-hide transition-all" ${ed} data-style-id="promoCta" data-field="promoCta" data-placeholder="نص الزر" ${hiddenAttr('promoCta')} ${getElStyle('promoCta')}>${state.promo.ctaText}</span>`;
+                const pCtaHtml = (!isExport || (state.promo.ctaText.trim() && !isHidden('promoCta'))) ? (isExport ? `<a href="https://wa.me/${state.whatsapp.replace(/\+/g,'')}?text=${encodeURIComponent(state.promo.waText||'')}" target="_blank" class="inline-flex items-center gap-3 font-readex font-bold text-base py-3.5 px-8 rounded-full ${p.highlight} text-white shadow-lg hover:opacity-90 transition-all btn-container ${getElClass('promoCta')}" style="text-decoration:none;">${pCtaInner}</a>` : `<div class="inline-flex items-center gap-3 font-readex font-bold text-base py-3.5 px-8 rounded-full ${p.highlight} text-white shadow-lg hover:opacity-90 transition-all btn-container cursor-pointer ${getElClass('promoCta')}">${pCtaInner}</div>`) : '';
+
+                if(state.promo.title.trim() || state.promo.text.trim() || !isExport) {
+                    promoHTML = `
+                        <div class="w-full ${theme.grid} mb-20 relative z-10 group/promo group/card">
+                            ${!isExport ? `<div class="floating-toolbar card-toolbar hide-on-export" style="top:-22px; left: 24px; right: auto; transform: translateY(0) !important;"><button onclick="editPromoWaText()" class="tool-btn" title="تعديل رسالة الاستفسار عن الخصم"><i data-lucide="message-square-text" class="w-4 h-4 text-emerald-400"></i></button></div>` : ''}
+                            <div class="absolute -top-5 right-8 md:right-12 ${p.ribbon} px-8 py-3 rounded-full font-readex font-bold text-sm transform -rotate-3 z-20 flex items-center gap-2"><i data-lucide="gift" class="w-4 h-4"></i> فرصة مميزة</div>
+                            <div class="${p.bg} ${p.border} rounded-[3rem] p-12 md:p-20 text-right ${p.text} flex flex-col md:flex-row gap-12 items-center justify-between relative overflow-hidden group">
+                                <div class="absolute -left-32 -top-32 w-[30rem] h-[30rem] bg-white/5 rounded-full blur-3xl pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
+                                <div class="flex-1 relative z-10 flex flex-col gap-6 items-start">${pTitle}${state.promo.title.trim() ? `<div class="h-1.5 w-24 ${p.highlight}/50 rounded-full"></div>` : ''}${pTextHtml}${pCtaHtml}</div>
+                                <div class="hidden lg:flex shrink-0 w-48 h-48 rounded-full border-4 border-current/10 items-center justify-center relative z-10 shadow-inner bg-current/5 backdrop-blur-sm"><i data-lucide="award" class="w-24 h-24 ${p.icon} opacity-90 drop-shadow-lg"></i></div>
+                            </div>
+                        </div>`;
+                }
+            }
+
+            const fText = (!isExport || (state.footer.text.trim() && !isHidden('footerText'))) ? `<p class="font-alexandria text-lg opacity-70 font-medium max-w-2xl mx-auto leading-relaxed w-full inline-block empty-hide transition-all ${getElClass('footerText')}" ${ed} data-style-id="footerText" data-field="footerText" data-placeholder="نص التذييل" ${hiddenAttr('footerText')} ${getElStyle('footerText')}>${state.footer.text}</p>` : '';
+            const fCta = (!isExport || (state.footer.ctaText.trim() && !isHidden('footerCta'))) ? `<div class="bg-[#25D366] text-white font-readex font-bold py-5 px-14 rounded-full hover:bg-[#128C7E] transition-all hover:scale-105 hover:-translate-y-1 inline-flex items-center justify-center gap-3 text-2xl shadow-[0_15px_30px_rgba(37,211,102,0.3)] btn-container cursor-pointer ${getElClass('footerCta')}"><i data-lucide="message-circle" class="w-8 h-8 shrink-0"></i> <span class="empty-hide transition-all" ${ed} data-style-id="footerCta" data-field="footerCta" data-placeholder="نص الزر" ${hiddenAttr('footerCta')} ${getElStyle('footerCta')}>${state.footer.ctaText}</span></div>` : '';
+            
+            const footerHTML = `
+                <div class="w-full ${theme.grid} mt-auto text-center pt-12 border-t border-current/10 ${theme.headerText} flex flex-col items-center gap-8 relative z-10 group/footer">
+                    ${!isExport ? `<button onclick="editFooterWaText()" class="hide-on-export absolute -top-2 left-1/2 -translate-x-1/2 tool-btn opacity-0 group-hover/footer:opacity-100 transition-opacity" style="background:rgba(139,123,247,0.15);"><i data-lucide="message-square-text" class="w-4 h-4 text-emerald-400"></i></button>` : ''}
+                    ${fText}${!isExport ? fCta : ((state.footer.ctaText.trim() && !isHidden('footerCta')) ? `<a href="https://wa.me/${state.whatsapp.replace(/\+/g,'')}?text=${encodeURIComponent(state.footer.waText||'')}" target="_blank" style="text-decoration:none;">${fCta}</a>` : '')}
+                </div>`;
+
+            container.innerHTML = headerHTML + compassHTML + mainContentHTML + promoHTML + footerHTML;
+            if(!isExport) { lucide.createIcons(); populateNeighborhoodDropdown(); }
+        }
+
+        function setCompassType(t) { state.compass.selectedType = t; Storage.save(); renderUI(); }
+        function updateCompassParam(param, val) { state.compass[param] = val; Storage.save(); renderUI(); }
+        function setSidebarPricingTab(type) {
+            ['villa', 'apartment', 'building'].forEach(t => {
+                document.getElementById(`tab-btn-${t}`).className = t===type ? "flex-1 py-1.5 text-xs font-bold rounded-xl font-readex transition-all tab-btn-active" : "flex-1 py-1.5 text-xs font-bold rounded-xl font-readex transition-all tab-btn-inactive";
+                document.getElementById(`pricing-panel-${t}`).classList.toggle('hidden', t!==type);
+            });
+        }
+        function updatePricingMatrix(category, subKey, itemKey, val, isString = false) {
+            const finalVal = isString ? val : (parseInt(val) || 0);
+            if (itemKey !== null) state.pricingMatrix[category][subKey][itemKey] = finalVal;
+            else state.pricingMatrix[category][subKey] = finalVal;
+            Storage.save(); renderUI();
+        }
+        function updateSectorFee(secNum, val) { state.compass.sectorFees[secNum] = parseInt(val) || 0; Storage.save(); renderUI(); }
+
+        function showNeighborhoodDropdown() { const list = document.getElementById('neighborhood-dropdown-list'); if (list) list.classList.remove('hidden'); }
+        function hideNeighborhoodDropdown() { setTimeout(() => { const list = document.getElementById('neighborhood-dropdown-list'); if (list) list.classList.add('hidden'); }, 250); }
+        function selectNeighborhood(name, sector) { state.compass.neighborhood = name; state.compass.sector = sector; const input = document.getElementById('neighborhood-search-input'); if (input) input.value = name; hideNeighborhoodDropdown(); Storage.save(); renderUI(); }
+        function populateNeighborhoodDropdown(filterText = '') {
+            const list = document.getElementById('neighborhood-dropdown-list'); if (!list) return;
+            const term = filterText.trim().toLowerCase(); const filtered = RIYADH_NEIGHBORHOODS.filter(n => !term || n.name.toLowerCase().includes(term));
+            if (filtered.length === 0) { list.innerHTML = `<div class="p-3 text-xs opacity-60 text-center">لا يوجد حي بهذا الاسم</div>`; return; }
+            list.innerHTML = filtered.map(n => {
+                const sec = RIYADH_SECTORS[n.sector]; const isSel = (state.compass.neighborhood === n.name);
+                return `<div onclick="selectNeighborhood('${n.name}', ${n.sector})" class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-fieldAccent/20 transition-colors ${isSel ? 'bg-fieldAccent/30 font-bold' : ''}"><span class="text-xs font-readex flex items-center gap-2"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-fieldAccent"></i> ${n.name}</span><span class="text-[10px] opacity-60 bg-white/5 px-2 py-0.5 rounded-md">${sec.name.split('(')[0]}</span></div>`;
+            }).join('');
+            lucide.createIcons({ root: list });
+        }
+        function filterNeighborhoods(val) { showNeighborhoodDropdown(); populateNeighborhoodDropdown(val); }
+        document.addEventListener('click', (e) => { if (!e.target.closest('#neighborhood-search-input') && !e.target.closest('#neighborhood-dropdown-list')) hideNeighborhoodDropdown(); });
+
+        let activeEl = null; let activeStyleId = null;
+
+        document.addEventListener('focusin', (e) => {
+            if (e.target.isContentEditable) {
+                activeEl = e.target; activeStyleId = activeEl.getAttribute('data-style-id');
+                if (activeStyleId) {
+                    const rect = activeEl.getBoundingClientRect(); const tb = document.getElementById('text-toolbar'); tb.style.display = 'flex';
+                    const s = state.styles && state.styles[activeStyleId] ? state.styles[activeStyleId] : {};
+                    document.getElementById('tt-color').value = s.color || '#ffffff'; document.getElementById('tt-bg').value = s.backgroundColor || '#000000';
+                    const hideBtn = document.getElementById('tt-toggle-hide'); const hidden = isHidden(activeStyleId);
+                    hideBtn.innerHTML = `<i data-lucide="${hidden ? 'eye' : 'eye-off'}" class="w-4 h-4"></i>`;
+                    hideBtn.title = hidden ? 'إظهار هذا الحقل' : 'إخفاء هذا الحقل'; lucide.createIcons({ root: hideBtn });
+                    let top = rect.top - 70; if(top < 10) top = rect.bottom + 10;
+                    tb.style.top = `${top + window.scrollY}px`; tb.style.left = `${Math.max(10, rect.left + (rect.width/2) - (tb.offsetWidth/2))}px`;
+                }
+            }
+        });
+        document.addEventListener('mousedown', (e) => { if(!e.target.closest('#text-toolbar') && !e.target.isContentEditable) { document.getElementById('text-toolbar').style.display = 'none'; activeEl = null; } });
+        
+        function updateElStyle(prop, val) {
+            if(!activeEl || !activeStyleId) return;
+            if(!state.styles) state.styles = {}; if(!state.styles[activeStyleId]) state.styles[activeStyleId] = {};
+            state.styles[activeStyleId][prop] = val;
+            if(prop === 'color') activeEl.style.setProperty('color', val, 'important');
+            if(prop === 'backgroundColor') { activeEl.style.setProperty('background-color', val, 'important'); activeEl.style.setProperty('border-color', val, 'important'); activeEl.style.setProperty('padding', '2px 10px', 'important'); activeEl.style.setProperty('border-radius', '8px', 'important'); }
+            Storage.save();
+        }
+        document.getElementById('tt-color').addEventListener('input', (e) => updateElStyle('color', e.target.value));
+        document.getElementById('tt-bg').addEventListener('input', (e) => updateElStyle('backgroundColor', e.target.value));
+
+        function toggleGoldenChoice() {
+            if(!activeStyleId) return;
+            toggleGoldenChoiceForId(activeStyleId);
+        }
+
+        function toggleGoldenChoiceForId(styleId) {
+            if(!state.styles) state.styles = {};
+            if(!state.styles[styleId]) state.styles[styleId] = {};
+            state.styles[styleId].isGolden = !state.styles[styleId].isGolden;
+            Storage.save();
+            renderUI();
+            const el = document.querySelector(`[data-style-id="${styleId}"]`);
+            if(el) { el.focus(); }
+        }
+
+        function adjustFontSize(dir) {
+            if(!activeEl || !activeStyleId) return;
+            if(!state.styles) state.styles = {}; if(!state.styles[activeStyleId]) state.styles[activeStyleId] = {};
+            let currentSize = parseInt(window.getComputedStyle(activeEl).fontSize) || 16; let newSize = currentSize + (dir * 2);
+            state.styles[activeStyleId].fontSize = `${newSize}px`; activeEl.style.setProperty('font-size', `${newSize}px`, 'important');
+            Storage.save(); document.getElementById('text-toolbar').style.top = `${activeEl.getBoundingClientRect().top - 70 + window.scrollY}px`;
+        }
+        function resetElStyle() { if(!activeEl || !activeStyleId || !state.styles) return; delete state.styles[activeStyleId]; Storage.save(); renderUI(); document.getElementById('text-toolbar').style.display = 'none'; }
+        function clearActiveElText() { if(!activeEl || !activeEl.isContentEditable) return; activeEl.innerText = ''; activeEl.dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('text-toolbar').style.display = 'none'; activeEl.blur(); }
+        function toggleFieldHidden() { if(!activeStyleId) return; if(!state.hidden) state.hidden = {}; state.hidden[activeStyleId] = !state.hidden[activeStyleId]; if(!state.hidden[activeStyleId]) delete state.hidden[activeStyleId]; Storage.save(); document.getElementById('text-toolbar').style.display = 'none'; activeEl && activeEl.blur(); renderUI(); }
+
+        document.addEventListener('input', (e) => {
+            if (e.target.isContentEditable) {
+                const field = e.target.getAttribute('data-field'); const pkgEl = e.target.closest('[data-pkg-id]');
+                const val = field === 'promoText' ? e.target.innerHTML.replace(/<br\s*[\/]?>/gi, "\n").trim() : e.target.innerText.trim();
+                
+                if (pkgEl) {
+                    const pkgId = parseInt(pkgEl.getAttribute('data-pkg-id')); const pkg = getCurPkgs().find(p => p.id === pkgId);
+                    
+                    if (field.startsWith('feature-')) { 
+                        const fId = parseInt(field.split('-')[1]); const feat = pkg.features.find(f => f.id === fId); if (feat) feat.text = val; 
+                    } else if (field === 'originalPrice') {
+                        const currentFinalPrice = getCalculatedPackagePrice(pkg.id);
+                        const baseFinalPrice = getBasePackagePrice(pkg.id);
+                        const scaleRatio = (baseFinalPrice > 0) ? (currentFinalPrice / baseFinalPrice) : 1;
+                        const parsedVal = parseInt(val.replace(/,/g, '')) || 0;
+                        
+                        pkg[field] = (parsedVal > 0 && scaleRatio > 0) ? Math.round(parsedVal / scaleRatio).toString() : val;
+                        
+                        const card = e.target.closest('.group\\/card');
+                        if (card) {
+                            let topPriceRow = e.target.parentElement;
+                            if (topPriceRow && topPriceRow.classList.contains('flex')) {
+                                let badge = topPriceRow.querySelector('.bg-red-500');
+                                if (parsedVal > currentFinalPrice) {
+                                    const ratio = Math.round((1 - (currentFinalPrice / parsedVal)) * 100);
+                                    if (badge) { badge.innerText = 'وفر ' + ratio + '%'; }
+                                    else { topPriceRow.insertAdjacentHTML('beforeend', `<span class="bg-red-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-full mr-3 shadow-md shrink-0">وفر ${ratio}%</span>`); }
+                                } else if (badge) { badge.remove(); }
+                            }
+                        }
+                    } else {
+                        pkg[field] = val;
+                    }
+                } else {
+                    if (field === 'headerTitle') state.header.title = val; if (field === 'headerSubtitle') state.header.subtitle = val;
+                    if (field === 'footerText') state.footer.text = val; if (field === 'footerCta') state.footer.ctaText = val;
+                    if (field === 'promoTitle') state.promo.title = val; if (field === 'promoText') state.promo.text = val; if (field === 'promoCta') state.promo.ctaText = val;
+                }
+                Storage.save();
+            }
+        });
+        
+        document.addEventListener('paste', (e) => { if (e.target.isContentEditable) { e.preventDefault(); let text = (e.originalEvent || e).clipboardData.getData('text/plain').replace(/(\r\n|\n|\r)/gm, " "); document.execCommand('insertText', false, text); } });
+
+        function changeTheme(t) { state.theme = t; Storage.save(); renderUI(); }
+        function renderThemePicker() {
+            const wrap = document.getElementById('theme-picker'); if (!wrap) return;
+            wrap.innerHTML = THEME_FAMILIES.map(fam => {
+                const def = THEME_DEFS[fam.id] || THEME_DEFS.field; const isAct = state.theme === fam.id;
+                return `<div onclick="changeTheme('${fam.id}')" class="p-3 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${isAct ? 'border-purple-400 bg-purple-50/20 shadow-md' : 'border-gray-100 hover:border-gray-200'}"><div class="flex items-center gap-2.5"><div class="w-4 h-4 rounded-full shadow-sm" style="background:${def.swatch};"></div><span class="font-readex text-xs font-bold text-gray-700">${fam.label}</span></div>${isAct ? '<i data-lucide="check" class="w-4 h-4 text-fieldAccent"></i>' : ''}</div>`;
+            }).join('');
+            lucide.createIcons({ root: wrap });
+        }
+
+        function togglePromo() { state.promo.enabled = !state.promo.enabled; Storage.save(); renderUI(); }
+        function updateWaNum(v) { state.whatsapp = v; Storage.save(); }
+        document.getElementById('logo-upload').addEventListener('change', function(e) { const f = e.target.files[0]; if(f) { const r = new FileReader(); r.onload = (ev) => { state.logo.src = ev.target.result; Storage.save(); renderUI(); }; r.readAsDataURL(f); } });
+        function updateLogo() { state.logo.showInBoard = document.getElementById('toggle-logo-board').checked; state.logo.boardFrameW = parseInt(document.getElementById('framew-logo-board').value); state.logo.boardFrameH = parseInt(document.getElementById('frameh-logo-board').value); state.logo.boardZoom = parseInt(document.getElementById('zoom-logo-board').value); Storage.save(); renderUI(); }
+        function setLogoAlign(ctx, align) { state.logo.boardAlign = align; Storage.save(); renderUI(); }
+
+        function addPkg() { const list = getCurPkgs(); const base = list[0] || {id:Date.now(), name:"باقة", features:[], priceComment:""}; const newPkg = JSON.parse(JSON.stringify(base)); newPkg.id = Date.now(); list.push(newPkg); Storage.save(); renderUI(); }
+        function delPkg(id) { const list = getCurPkgs(); if(list.length > 1 && confirm("حذف هذه الباقة؟")) { state.packages[state.compass.selectedType] = list.filter(p => p.id !== id); Storage.save(); renderUI(); } }
+        function movePkg(id, dir) { const list = getCurPkgs(); const idx = list.findIndex(p => p.id === id); const target = idx - dir; if(target >= 0 && target < list.length) { [list[idx], list[target]] = [list[target], list[idx]]; Storage.save(); renderUI(); } }
+        function editBadge(id) { const pkg = getCurPkgs().find(p => p.id === id); if(pkg) { const newVal = prompt("نص الوسم المميز (فارغ لإزالته):", pkg.badge || ""); if(newVal !== null) { pkg.badge = newVal.trim(); Storage.save(); renderUI(); } } }
+        function editWaText(id) { const pkg = getCurPkgs().find(p => p.id === id); if(pkg) { const newVal = prompt("رسالة واتساب عند الحجز:", pkg.waText || ""); if(newVal !== null && newVal.trim()) { pkg.waText = newVal.trim(); Storage.save(); renderUI(); } } }
+        function toggleFeatured(id) { const list = getCurPkgs(); const willFeature = !list.find(p => p.id === id).featured; list.forEach(p => p.featured = (p.id === id && willFeature)); Storage.save(); renderUI(); }
+        function editPromoWaText() { const newVal = prompt("رسالة الواتساب للخصم:", state.promo.waText || ""); if(newVal !== null && newVal.trim()) { state.promo.waText = newVal.trim(); Storage.save(); renderUI(); } }
+        function editFooterWaText() { const newVal = prompt("رسالة الواتساب للزر التذييل:", state.footer.waText || ""); if(newVal !== null && newVal.trim()) { state.footer.waText = newVal.trim(); Storage.save(); renderUI(); } }
+        function resetPkg(id) { if(confirm("إعادة الباقة للوضع الافتراضي؟")) { const idx = getCurPkgs().findIndex(p => p.id === id); if(idx !== -1) { const prefix = `pkg_${id}_`; if(state.styles) Object.keys(state.styles).forEach(k => { if(k.startsWith(prefix)) delete state.styles[k]; }); if(state.hidden) Object.keys(state.hidden).forEach(k => { if(k.startsWith(prefix)) delete state.hidden[k]; }); Storage.save(); renderUI(); } } }
+        function resetAll() { if(confirm("استعادة اللوحة الأصلية بالكامل ومسح كافة التعديلات؟")) { state = JSON.parse(JSON.stringify(defaultData)); Storage.save(); renderUI(); } }
+        function addFeat(pkgId) { getCurPkgs().find(p => p.id === pkgId).features.push({ id: Date.now(), text: "ميزة إضافية...", included: true }); Storage.save(); renderUI(); }
+        function delFeat(pkgId, fId) { const pkg = getCurPkgs().find(p => p.id === pkgId); pkg.features = pkg.features.filter(f => f.id !== fId); Storage.save(); renderUI(); }
+        function togFeat(pkgId, fId) { const f = getCurPkgs().find(p => p.id === pkgId).features.find(x => x.id === fId); f.included = !f.included; Storage.save(); renderUI(); }
+        function movFeat(pkgId, fId, dir) { const pkg = getCurPkgs().find(p => p.id === pkgId); const idx = pkg.features.findIndex(f => f.id === fId); const t = idx + dir; if(t >= 0 && t < pkg.features.length) { [pkg.features[idx], pkg.features[t]] = [pkg.features[t], pkg.features[idx]]; Storage.save(); renderUI(); } }
+
+        function exportDataJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `FRAMEIYM_System_Data_${Date.now()}.json`);
+            dlAnchor.click();
+        }
+
+        function importDataJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    const sanitized = sanitizeState(imported);
+                    if (sanitized) {
+                        state = sanitized;
+                        Storage.save();
+                        renderUI();
+                        alert("تم استيراد كافة بيانات النظام وتحديثها بنجاح!");
+                    } else {
+                        alert("ملف البيانات غير صالح أو تالف.");
+                    }
+                } catch (err) {
+                    alert("حدث خطأ أثناء قراءة ملف النسخة الاحتياطية.");
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        let currentExportDataUrl = null;
+
+        function toggleCustomExportSize() { 
+            const fields = document.getElementById('custom-size-fields');
+            if(fields) fields.classList.toggle('hidden', document.getElementById('export-ratio').value !== 'custom'); 
+        }
+
+        function getExportDimensions() { 
+            const ratio = document.getElementById('export-ratio').value; 
+            if (ratio === 'custom') {
+                const w = parseInt(document.getElementById('custom-export-w').value) || 1080;
+                const h = parseInt(document.getElementById('custom-export-h').value) || 1920;
+                return [w, h];
+            }
+            const presets = { '9:16': [1080, 1920], '4:5': [1080, 1350], '1:1': [1080, 1080], '16:9': [1920, 1080] }; 
+            return presets[ratio] || [1080, 1920]; 
+        }
+
+        function closeExportPreview() {
+            const modal = document.getElementById('export-preview-modal');
+            modal.classList.remove('opacity-100');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+            currentExportDataUrl = null;
+        }
+
+        async function openExportPreview() {
+            document.getElementById('text-toolbar').style.display = 'none';
+            const modal = document.getElementById('export-preview-modal');
+            const previewImg = document.getElementById('preview-image');
+            const loader = document.getElementById('preview-loader');
+            const btnDownload = document.getElementById('btn-download-img');
+
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.add('opacity-100');
+
+            previewImg.classList.add('hidden');
+            btnDownload.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            const scope = document.getElementById('export-scope').value;
+            const [finalW, finalH] = getExportDimensions();
+            const arena = document.getElementById('export-arena');
+
+            const exportTheme = getThemeEngine(state.theme, false);
+            const hexBg = exportTheme.bgHex;
+            let htmlToCapture = '';
+
+            if (scope === 'full') {
+                renderUI(true); 
+                htmlToCapture = document.getElementById('live-preview').innerHTML; 
+                renderUI(false);
+            } else {
+                htmlToCapture = generateCategorySpecificHTML(exportTheme);
+            }
+
+            arena.innerHTML = `<div id="export-target" class="${exportTheme.container}" style="${exportTheme.extraBgStyle} width: 1440px; min-height: 1080px; padding: 100px 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; direction: rtl;">${htmlToCapture}</div>`;
+            lucide.createIcons({ root: arena });
+            
+            if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch(e) {} }
+            await new Promise(r => setTimeout(r, 1200)); 
+            
+            const target = arena.querySelector('#export-target');
+            
+            try {
+                const targetHeight = target.offsetHeight;
+                const highResDataUrl = await htmlToImage.toJpeg(target, { quality: 1.0, backgroundColor: hexBg, pixelRatio: 2.5, width: 1440, height: targetHeight, windowWidth: 1440, windowHeight: targetHeight });
+                
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas'); 
+                    canvas.width = finalW; canvas.height = finalH;
+                    const ctx = canvas.getContext('2d'); 
+                    ctx.fillStyle = hexBg; ctx.fillRect(0, 0, finalW, finalH);
+                    
+                    const targetRatio = finalW / finalH; const imgRatio = img.width / img.height;
+                    let drawW = finalW, drawH = finalH, offsetX = 0, offsetY = 0;
+                    if (imgRatio > targetRatio) { drawW = finalW; drawH = finalW / imgRatio; offsetY = (finalH - drawH) / 2; }
+                    else { drawH = finalH; drawW = finalH * imgRatio; offsetX = (finalW - drawW) / 2; }
+                    
+                    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+                    
+                    currentExportDataUrl = canvas.toDataURL('image/jpeg', 1.0);
+                    previewImg.src = currentExportDataUrl;
+                    
+                    loader.classList.add('hidden');
+                    previewImg.classList.remove('hidden');
+                    btnDownload.classList.remove('hidden');
+                    arena.innerHTML = '';
+                };
+                img.src = highResDataUrl;
+            } catch(e) { 
+                alert("حدث خطأ أثناء معالجة الصورة للمعاينة."); 
+                closeExportPreview();
+                arena.innerHTML = ''; 
+            }
+        }
+
+        function downloadExportedImage() {
+            if (!currentExportDataUrl) return;
+            const link = document.createElement('a'); 
+            link.download = `FRAMEIYM_SmartExport_${Date.now()}.jpg`; 
+            link.href = currentExportDataUrl; 
+            link.click(); 
+            closeExportPreview();
+        }
+
+        function generateCategorySpecificHTML(theme) {
+            const c = state.compass;
+            const pm = state.pricingMatrix;
+            
+            let typeName = "";
+            let details = [];
+
+            if (c.selectedType === 'villa') {
+                typeName = "باقات وتغطيات الفلل";
+                details.push(`العدد: ${c.villaCount} فلة`);
+                details.push(`المساحة: ${pm.villa.labels[c.villaArea]}`);
+            } else if (c.selectedType === 'apartment') {
+                typeName = "باقات وتغطيات الشقق";
+                details.push(`العدد: ${c.apartmentCount} شقة`);
+                details.push(`المساحة: ${pm.apartment.labels[c.apartmentArea]}`);
+            } else if (c.selectedType === 'building') {
+                typeName = "باقات وتغطيات العمائر المكتملة";
+                details.push(`عدد الشقق: ${pm.building.aptLabels[c.buildingApartments]}`);
+                details.push(`إجمالي المساحة: ${pm.building.labels[c.buildingArea]}`);
+            } else {
+                typeName = "تسعير المشاريع الخاصة والاستثمارية";
+                details.push(`نوع المشروع: مخصص`);
+            }
+
+            const nName = c.neighborhood || "غير محدد";
+            details.push(`الموقع: حي ${nName}`);
+
+            let logoHtml = '';
+            if (state.logo.src && state.logo.showInBoard) {
+                 logoHtml = `<div class="mb-10 flex w-full justify-center"><div class="logo-frame" style="width: ${state.logo.boardFrameW}px; height: ${state.logo.boardFrameH}px; border-radius: ${state.logo.boardRadius}px; background: ${theme.logoFrameBg}; border: ${theme.logoFrameBorder}; box-shadow: 0 15px 35px -10px rgba(0,0,0,0.25);"><img src="${state.logo.src}" style="max-width: 82%; max-height: 82%; object-fit: contain; transform: scale(${(state.logo.boardZoom||100)/100});"></div></div>`;
+            }
+
+            const detailsHtml = details.map(d => `<span class="bg-current/5 px-5 py-2.5 rounded-full text-sm font-bold border border-current/10 shadow-sm flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 opacity-50"></i> ${d}</span>`).join('');
+
+            const headerHTML = `
+                <div class="w-full ${theme.grid} flex flex-col items-center mb-16 relative z-10">
+                    ${logoHtml}
+                    <h1 class="font-readex font-extrabold text-5xl md:text-6xl tracking-tight text-center mb-8 ${theme.headerText}">${typeName}</h1>
+                    <div class="flex flex-wrap justify-center gap-4 ${theme.headerText}">${detailsHtml}</div>
+                </div>
+            `;
+
+            let pkgsHtml = '';
+             if (['villa', 'apartment', 'building'].includes(c.selectedType)) {
+                 const pkgs = state.packages[c.selectedType] || [];
+                 pkgsHtml = `<div class="w-full ${theme.grid} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-24 relative z-10">${pkgs.map(p => generatePackage(p, false)).join('')}</div>`;
+             } else {
+                 pkgsHtml = generateCustomProjectForm(c.selectedType, theme).replace(/onclick=".*?"/g, "");
+             }
+
+             const footerHTML = `
+                <div class="w-full ${theme.grid} mt-auto text-center pt-12 border-t border-current/10 ${theme.headerText} flex flex-col items-center gap-8 relative z-10">
+                    ${(state.footer.text.trim() && !isHidden('footerText')) ? `<p class="font-alexandria text-lg opacity-70 font-medium max-w-2xl mx-auto leading-relaxed">${state.footer.text}</p>` : ''}
+                </div>`;
+
+            return headerHTML + pkgsHtml + footerHTML;
+        }
+
+        function exportHTML() {
+            document.getElementById('text-toolbar').style.display = 'none';
+            const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${state.header.title} - FRAMEIYM Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Readex+Pro:wght@500;700;800&display=swap" rel="stylesheet">
+    <script id="fy-tw-cdn" src="https://cdn.tailwindcss.com" defer><\/script>
+    <script>
+        // التصميم (Tailwind) هو المعتمد عليه لإظهار محتوى منسّق بصرياً؛ بمجرد
+        // جاهزيته (نجاحاً أو فشلاً) تُخفى شاشة التحميل فوراً دون انتظار أي شيء آخر.
+        function fyTwDone(){ if(window.tailwind){ tailwind.config={theme:{extend:{colors:{fieldBg:'#101220',fieldCard:'#1a1c2e',fieldBorder:'#2a2d45',fieldAccent:'#8b7bf7',frameiymNavy:'#1D3558',frameiymOrange:'#F89D53',frameiymGold:'#FCE2AB'},fontFamily:{readex:['"Readex Pro"','sans-serif'],alexandria:['Alexandria','sans-serif']}}}}; } if(window.__fyOnTwReady) window.__fyOnTwReady(); }
+        document.getElementById('fy-tw-cdn').addEventListener('load', fyTwDone);
+        document.getElementById('fy-tw-cdn').addEventListener('error', fyTwDone);
+    <\/script>
+    <script id="fy-lucide-cdn" src="https://unpkg.com/lucide@latest" defer><\/script>
+    <script>
+        // الأيقونات عنصر تجميلي فقط: لا تُعطَّل ظهور الباقات؛ إن وصلت لاحقاً
+        // تُستكمل تلقائياً في مكانها دون أي أثر على سرعة أو صحة عرض المحتوى.
+        function fyLuDone(){ if(window.lucide && typeof window.lucide.createIcons==='function'){ try{ window.lucide.createIcons(); }catch(e){} } }
+        document.getElementById('fy-lucide-cdn').addEventListener('load', fyLuDone);
+        document.getElementById('fy-lucide-cdn').addEventListener('error', fyLuDone);
+    <\/script>
+    <style>
+        body{font-family:'Alexandria',sans-serif;} 
+        h1,h2,h3,h4,.font-readex{font-family:'"Readex Pro"',sans-serif;} 
+        .glass-panel{background:rgba(255,255,255,0.2);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.3);} 
+        .glass-panel-dark{background:rgba(0,0,0,0.2);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.1);} 
+        .empty-hide:empty{display:none !important; margin:0 !important; padding:0 !important;} 
+        [data-hidden="true"]{display:none !important;} 
+        .logo-frame{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+        .compass-tab.active { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.25); }
+        .custom-select-dropdown { max-height: 240px; overflow-y: auto; }
+        
+        .golden-choice-item {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(217, 119, 6, 0.24) 100%) !important;
+            border: 1.5px solid #fbbf24 !important;
+            box-shadow: 0 0 25px -3px rgba(245, 158, 11, 0.45), inset 0 0 14px rgba(251, 191, 36, 0.25) !important;
+            border-radius: 18px !important;
+            padding: 10px 14px !important;
+            color: #fef08a !important;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            position: relative;
+        }
+        .golden-choice-item::before {
+            content: '★';
+            position: absolute;
+            top: -9px;
+            left: 12px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 7px;
+            border-radius: 99px;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+        }
+        
+        /* واجهة التحميل الاحترافية */
+        #client-loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1c2e 0%, #101220 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999999; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; }
+        .loader-logo-wrap { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+        .loader-ring { position: absolute; inset: 0; border: 3px solid rgba(139,123,247,0.1); border-top-color: #8b7bf7; border-bottom-color: #F89D53; border-radius: 50%; animation: spin-ring 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; }
+        .loader-core { width: 60px; height: 60px; background: rgba(139,123,247,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse-core 2s ease-in-out infinite; border: 1px solid rgba(139,123,247,0.3); }
+        .loader-core svg { width: 30px; height: 30px; color: #8b7bf7; }
+        .loader-text { font-family: 'Readex Pro', sans-serif; font-size: 26px; font-weight: 800; color: #ffffff; margin-bottom: 8px; letter-spacing: 1.5px; text-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .loader-sub { font-family: 'Alexandria', sans-serif; font-size: 14px; color: #a1a1aa; font-weight: 500; }
+        .progress-bar-wrap { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-top: 24px; overflow: hidden; position: relative; }
+        .progress-bar { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: linear-gradient(90deg, #8b7bf7, #F89D53); border-radius: 4px; animation: load-progress 0.35s ease-out forwards; }
+        
+        @keyframes spin-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse-core { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
+        @keyframes load-progress { 0% { width: 0%; } 40% { width: 60%; } 80% { width: 85%; } 100% { width: 100%; } }
+        
+        .break-words { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; }
+        .min-w-0 { min-width: 0; }
+        .text-right { text-align: right !important; }
+    </style>
+</head>
+<body class="${getThemeEngine(state.theme, false).container} min-h-screen text-right flex flex-col antialiased" style="${getThemeEngine(state.theme, false).extraBgStyle}">
+    
+    <div id="client-loader">
+        <div class="loader-logo-wrap">
+            <div class="loader-ring"></div>
+            <div class="loader-core">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            </div>
+        </div>
+        <div class="loader-text">FRAMEIYM</div>
+        <div class="loader-sub">جاري بناء الباقات والتسعير الذكي...</div>
+        <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+    </div>
+
+    <div id="client-app" class="container mx-auto px-4 py-16 max-w-7xl flex-1 flex flex-col justify-center items-center"></div>
+
+    <script>
+        const state = ${JSON.stringify(state)};
+        const RIYADH_NEIGHBORHOODS = ${JSON.stringify(RIYADH_NEIGHBORHOODS)};
+        const RIYADH_SECTORS = ${JSON.stringify(RIYADH_SECTORS)};
+        const THEME_DEFS = ${JSON.stringify(THEME_DEFS)};
+        
+        ${getThemeEngine.toString()}
+        ${getAlign.toString()}
+        ${getElStyle.toString()}
+        ${getElClass.toString()}
+        ${isHidden.toString()}
+        ${hiddenAttr.toString()}
+        ${getCalculatedPackagePrice.toString()}
+        ${getBasePackagePrice.toString()}
+        ${formatNumberWithCommas.toString()}
+        ${generateCustomWaMessage.toString()}
+        ${generateCompassHTML.toString()}
+        ${generatePackage.toString()}
+        ${generateCustomProjectForm.toString()}
+        ${sendCustomProjectWa.toString()}
+
+        function renderClientUI() {
+            const container = document.getElementById('client-app');
+            const theme = getThemeEngine(state.theme, false);
+
+            let logoBoardHtml = '';
+            if (state.logo.src && state.logo.showInBoard) {
+                const alignFlex = getAlign(state.logo.boardAlign); const zoom = (state.logo.boardZoom || 100) / 100;
+                logoBoardHtml = '<div class="w-full flex" style="justify-content: '+alignFlex+'; margin-bottom: '+state.logo.boardSpace+'px;"><div class="logo-frame" style="width: '+state.logo.boardFrameW+'px; height: '+state.logo.boardFrameH+'px; border-radius: '+state.logo.boardRadius+'px; background: '+theme.logoFrameBg+'; border: '+theme.logoFrameBorder+'; box-shadow: 0 15px 35px -10px rgba(0,0,0,0.25);"><img src="'+state.logo.src+'" style="max-width: 82%; max-height: 82%; object-fit: contain; transform: scale('+zoom+');"></div></div>';
+            }
+
+            const headerAlign = state.logo.boardAlign === 'right' ? 'text-right items-start' : state.logo.boardAlign === 'left' ? 'text-left items-end' : 'text-center items-center';
+            const titleHtml = (state.header.title.trim() && !isHidden('headerTitle')) ? '<h1 class="font-readex font-extrabold text-5xl md:text-6xl lg:text-7xl tracking-tight w-full mb-4 break-words min-w-0 '+theme.headerText+' '+getElClass('headerTitle')+'" '+getElStyle('headerTitle')+'>'+state.header.title+'</h1>' : '';
+            const subTitleHtml = (state.header.subtitle.trim() && !isHidden('headerSubtitle')) ? '<h2 class="font-alexandria text-xl md:text-2xl opacity-70 font-medium leading-relaxed max-w-3xl w-full break-words min-w-0 '+theme.headerText+' '+getElClass('headerSubtitle')+'" '+getElStyle('headerSubtitle')+'>'+state.header.subtitle+'</h2>' : '';
+            const headerHTML = '<div class="w-full '+theme.grid+' mb-12 flex flex-col '+headerAlign+' relative z-10">' + logoBoardHtml + titleHtml + subTitleHtml + '</div>';
+            const compassHTML = generateCompassHTML(true);
+
+            let mainContentHTML = '';
+            if (['villa', 'apartment', 'building'].includes(state.compass.selectedType)) {
+                mainContentHTML = '<div class="w-full '+theme.grid+' grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-24 relative z-10">' + (state.packages[state.compass.selectedType] || []).map(p => generatePackage(p, false)).join('') + '</div>';
+            } else {
+                mainContentHTML = generateCustomProjectForm(state.compass.selectedType, theme);
+            }
+
+            let promoHTML = '';
+            if (state.promo.enabled && (state.promo.title.trim() || state.promo.text.trim()) && !isHidden('promoTitle') && !isHidden('promoText')) {
+                const p = theme.promo;
+                promoHTML = '<div class="w-full '+theme.grid+' mb-20 relative z-10"><div class="absolute -top-5 right-8 md:right-12 '+p.ribbon+' px-8 py-3 rounded-full font-readex font-bold text-sm transform -rotate-3 z-20 flex items-center gap-2"><i data-lucide="gift" class="w-4 h-4"></i> فرصة مميزة</div><div class="'+p.bg+' '+p.border+' rounded-[3rem] p-12 md:p-20 text-right '+p.text+' flex flex-col md:flex-row gap-12 items-center justify-between relative overflow-hidden"><div class="flex-1 relative z-10 flex flex-col gap-6 items-start"><h3 class="font-readex font-extrabold text-3xl md:text-4xl flex items-center gap-4 break-words min-w-0 '+getElClass('promoTitle')+'" '+getElStyle('promoTitle')+'><i data-lucide="gem" class="w-10 h-10 shrink-0 '+p.icon+'"></i> <span>'+state.promo.title+'</span></h3><div class="h-1.5 w-24 '+p.highlight+'/50 rounded-full"></div><p class="font-alexandria text-xl md:text-2xl leading-[1.8] opacity-90 font-medium break-words min-w-0 w-full text-right '+getElClass('promoText')+'" '+getElStyle('promoText')+'>'+state.promo.text.replace(/\\n/g, '<br>')+'</p><a href="https://wa.me/'+state.whatsapp.replace(/\\+/g,'')+'?text='+encodeURIComponent(state.promo.waText||'')+'" target="_blank" class="inline-flex items-center gap-3 font-readex font-bold text-base py-3.5 px-8 rounded-full '+p.highlight+' text-white shadow-lg hover:opacity-90 transition-all '+getElClass('promoCta')+'"><i data-lucide="message-circle" class="w-5 h-5"></i> <span>'+state.promo.ctaText+'</span></a></div><div class="hidden lg:flex shrink-0 w-48 h-48 rounded-full border-4 border-current/10 items-center justify-center relative z-10 shadow-inner bg-current/5 backdrop-blur-sm"><i data-lucide="award" class="w-24 h-24 '+p.icon+' opacity-90"></i></div></div></div>';
+            }
+
+            const footerHTML = '<div class="w-full '+theme.grid+' mt-auto text-center pt-12 border-t border-current/10 '+theme.headerText+' flex flex-col items-center gap-8 relative z-10">' + (state.footer.text.trim() && !isHidden('footerText') ? '<p class="font-alexandria text-lg opacity-70 font-medium max-w-2xl mx-auto leading-relaxed break-words min-w-0 '+getElClass('footerText')+'" '+getElStyle('footerText')+'>'+state.footer.text+'</p>' : '') + (state.footer.ctaText.trim() && !isHidden('footerCta') ? '<a href="https://wa.me/'+state.whatsapp.replace(/\\+/g,'')+'?text='+encodeURIComponent(state.footer.waText||'')+'" target="_blank" class="bg-[#25D366] text-white font-readex font-bold py-5 px-14 rounded-full hover:bg-[#128C7E] transition-all hover:scale-105 inline-flex items-center justify-center gap-3 text-2xl shadow-[0_15px_30px_rgba(37,211,102,0.3)] '+getElClass('footerCta')+'"><i data-lucide="message-circle" class="w-8 h-8 shrink-0"></i> <span '+getElStyle('footerCta')+'>'+state.footer.ctaText+'</span></a>' : '') + '</div>';
+
+            container.innerHTML = headerHTML + compassHTML + mainContentHTML + promoHTML + footerHTML;
+            safeCreateIcons(); populateNeighborhoodDropdown();
+        }
+
+        function setCompassType(t) { state.compass.selectedType = t; renderClientUI(); }
+        function updateCompassParam(param, val) { state.compass[param] = val; renderClientUI(); }
+        function showNeighborhoodDropdown() { const list = document.getElementById('neighborhood-dropdown-list'); if (list) list.classList.remove('hidden'); }
+        function hideNeighborhoodDropdown() { setTimeout(() => { const list = document.getElementById('neighborhood-dropdown-list'); if (list) list.classList.add('hidden'); }, 250); }
+        function selectNeighborhood(name, sector) { state.compass.neighborhood = name; state.compass.sector = sector; const input = document.getElementById('neighborhood-search-input'); if (input) input.value = name; hideNeighborhoodDropdown(); renderClientUI(); }
+        function populateNeighborhoodDropdown(filterText = '') {
+            const list = document.getElementById('neighborhood-dropdown-list'); if (!list) return;
+            const term = filterText.trim().toLowerCase(); const filtered = RIYADH_NEIGHBORHOODS.filter(n => !term || n.name.toLowerCase().includes(term));
+            if (filtered.length === 0) { list.innerHTML = '<div class="p-3 text-xs opacity-60 text-center">لا يوجد حي بهذا الاسم</div>'; return; }
+            list.innerHTML = filtered.map(n => {
+                const sec = RIYADH_SECTORS[n.sector]; const isSel = (state.compass.neighborhood === n.name);
+                return '<div onclick="selectNeighborhood(\\''+n.name+'\\', '+n.sector+')" class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-fieldAccent/20 transition-colors '+(isSel?'bg-fieldAccent/30 font-bold':'')+'"><span class="text-xs font-readex flex items-center gap-2"><i data-lucide=\\"map-pin\\" class=\\"w-3.5 h-3.5 text-fieldAccent\\"></i> '+n.name+'</span><span class="text-[10px] opacity-60 bg-white/5 px-2 py-0.5 rounded-md">'+sec.name.split('(')[0]+'</span></div>';
+            }).join('');
+            safeCreateIcons(list);
+        }
+        function filterNeighborhoods(val) { showNeighborhoodDropdown(); populateNeighborhoodDropdown(val); }
+
+        function safeCreateIcons(root) {
+            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                try { window.lucide.createIcons(root ? { root: root } : undefined); } catch (e) {}
+            }
+        }
+
+        let loaderHidden = false;
+        function hideLoader() {
+            if(loaderHidden) return;
+            loaderHidden = true;
+            const loader = document.getElementById('client-loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                setTimeout(() => loader.remove(), 800);
+            }
+        }
+
+        // تُبنى الباقات فوراً دون أي انتظار — لا لتحميل Tailwind ولا الأيقونات.
+        // شاشة التحميل تُخفى بمجرد اكتمال التصميم فعلياً (عنصر العرض الوحيد
+        // المؤثر على شكل المحتوى)، بدل الانتظار الثابت المُصطنع القديم.
+        window.__fyOnTwReady = function () { setTimeout(hideLoader, 150); };
+
+        renderClientUI();
+        setTimeout(hideLoader, 4000); // سقف أمان مطلق في حال تعذر وصول التصميم الخارجي
+        window.addEventListener('load', () => setTimeout(hideLoader, 150));
+    <\/script>
+</body></html>`;
+
+            const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob); link.download = `FRAMEIYM_CustomPricing_${Date.now()}.html`; link.click();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => { const loader = document.getElementById('loader'); if (loader) { loader.style.opacity = '0'; loader.style.pointerEvents = 'none'; setTimeout(() => loader.remove(), 600); } }, 800); 
+            try { const saved = sanitizeState(Storage.load()); if (saved) state = saved; renderUI(); }
+            catch (error) { state = JSON.parse(JSON.stringify(defaultData)); renderUI(); }
+        });
+        
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .live-mode .group\\/feat:has([contenteditable="true"]:empty):not(:hover) { display: none !important; margin: 0 !important; }
+            .live-mode .group\\/feat:has([data-hidden="true"]):not(:hover) { display: none !important; margin: 0 !important; }
+            .live-mode .group\\/footer:not(:hover) .btn-container:has(span:empty) { display: none !important; margin: 0 !important; }
+            .live-mode .group\\/footer:not(:hover) .btn-container:has(span[data-hidden="true"]) { display: none !important; margin: 0 !important; }
+            .live-mode .group\\/card:not(:hover) .btn-container:has(span[data-hidden="true"]) { display: none !important; margin: 0 !important; }
+            .live-mode .group\\/promo:not(:hover) h3:has(span:empty) { display: none !important; margin: 0 !important; }
+            .live-mode .group\\/promo:not(:hover) h3:has(span[data-hidden="true"]) { display: none !important; margin: 0 !important; }
+            .empty-hide:empty { display: none !important; margin: 0 !important; padding: 0 !important; }
+            h1.empty-hide:empty, h2.empty-hide:empty, h3.empty-hide:empty { margin-bottom: 0 !important; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
