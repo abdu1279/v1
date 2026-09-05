@@ -1582,6 +1582,47 @@
             return css;
         }
 
+        // يجلب ملفات الخطوط مرة واحدة هنا ويحوّلها إلى خطوط مدمجة داخل الملف
+        // المُصدَّر، مقتصراً على المقاطع المستخدمة فعلياً (العربي واللاتيني).
+        // بذلك يختفي آخر طلب شبكة كان يحجب رسم الصفحة على الجوال.
+        async function fyEmbedFonts(href) {
+            try {
+                const res = await fetch(href);
+                if (!res.ok) return '';
+                const css = await res.text();
+                // كل تعريف خط مع اسم مقطعه إن وُجد كتعليق قبله.
+                const faces = [];
+                const re = /(?:\/\*\s*([\w-]+)\s*\*\/\s*)?(@font-face\s*\{[^}]*\})/g;
+                let m;
+                while ((m = re.exec(css)) !== null) faces.push({ subset: m[1] || '', block: m[2] });
+                if (!faces.length) return '';
+                // نكتفي بالعربي واللاتيني؛ وإن غاب اسم المقطع نستدل بنطاق الأحرف.
+                const wanted = faces.filter(f => {
+                    if (f.subset) return f.subset === 'arabic' || f.subset === 'latin';
+                    const ur = (f.block.match(/unicode-range:\s*([^;]+);/i) || [])[1];
+                    if (!ur) return true;
+                    const u = ur.toUpperCase();
+                    return u.indexOf('U+06') !== -1 || u.indexOf('U+0600') !== -1 || u.indexOf('U+0000') !== -1;
+                });
+                const list = wanted.length ? wanted : faces;
+                let out = '', total = 0;
+                for (const f of list) {
+                    const u = f.block.match(/url\((https?:[^)]+)\)/);
+                    if (!u) continue;
+                    const fr = await fetch(u[1].replace(/^['"]|['"]$/g, ''));
+                    if (!fr.ok) return '';
+                    const buf = await fr.arrayBuffer();
+                    total += buf.byteLength;
+                    if (total > 1200000) return '';
+                    const bytes = new Uint8Array(buf);
+                    let bin = '';
+                    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+                    out += f.block.replace(u[0], 'url(data:font/woff2;base64,' + btoa(bin) + ')') + '\n';
+                }
+                return out;
+            } catch (e) { return ''; }
+        }
+
         // الشعار المرفوع قد يكون بأبعاد ضخمة جداً؛ تصغيره لأبعاد العرض الفعلية
         // (بثلاثة أضعاف الدقة لشاشات الجوال) يقلّص حجم الملف كثيراً دون أي فرق مرئي.
         async function fyOptimizeLogo(src) {
@@ -1688,6 +1729,20 @@
             const selfContained = compiledCss.length > 20000 && Object.keys(iconMap).length > 0;
             const fontsHref = 'https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Readex+Pro:wght@500;700;800&display=swap';
             const iconMapJson = JSON.stringify(iconMap).replace(/<\//g, '<\\/');
+            const embeddedFonts = await fyEmbedFonts(fontsHref);
+            const fontResources = embeddedFonts
+                ? '    <style>' + embeddedFonts + '</style>'
+                : [
+                    '    <link rel="preconnect" href="https://fonts.googleapis.com">',
+                    '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+                    '    <link rel="stylesheet" href="' + fontsHref + '" media="print" onload="this.media=\'all\'">',
+                    '    <noscript><link rel="stylesheet" href="' + fontsHref + '"></noscript>'
+                  ].join('\n');
+            // لا شيء خارجي يحجب الرسم في الوضع المستقل، فتُرفع شاشة التحميل
+            // بشكل متزامن فور بناء الباقات بدل انتظار أول إطار عرض.
+            const bootSnippet = (selfContained && embeddedFonts)
+                ? '        renderClientUI();\n        hideLoader();\n        setTimeout(hideLoader, 0);'
+                : '        renderClientUI();\n        window.__fyOnTwReady = function () { hideLoader(); };\n        requestAnimationFrame(() => requestAnimationFrame(hideLoader));\n        setTimeout(hideLoader, 4000);\n        window.addEventListener(\'load\', () => hideLoader());';
             const headResources = selfContained
                 ? '    <style>' + compiledCss + '</style>'
                 : [
@@ -1706,9 +1761,7 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${state.header.title} - FRAMEIYM Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="${fontsHref}" rel="stylesheet">
+${fontResources}
     <style>
         body{font-family:'Alexandria',sans-serif;} 
         h1,h2,h3,h4,.font-readex{font-family:'"Readex Pro"',sans-serif;} 
@@ -1858,17 +1911,20 @@ ${headResources}
             }
         }
 
-        // التصميم والأيقونات مدمجان داخل هذا الملف، فلا انتظار لأي مورد خارجي:
-        // تُبنى الباقات فور قراءة الصفحة وتُرفع شاشة التحميل في أول إطار عرض.
-        renderClientUI();
-        requestAnimationFrame(() => requestAnimationFrame(hideLoader));
-        window.__fyOnTwReady = function () { hideLoader(); };
-        setTimeout(hideLoader, 2500);
-        window.addEventListener('load', () => hideLoader());
+        // كل ما تحتاجه الصفحة مدمج داخلها، فلا مورد خارجي يؤخّر أول رسم.
+${bootSnippet}
     <\/script>
 </body></html>`;
 
             state.logo.src = fyOriginalLogo;
+
+            // تحقّق فعلي: لا يبقى في الملف أي مورد يُحمَّل من الإنترنت
+            // (عدا روابط واتساب التي لا تُفتح إلا بضغطة من العميل).
+            const refAttrs = (html.match(/(?:src|href)\s*=\s*["'](https?:\/\/[^"']+)/gi) || [])
+                .map(s => s.replace(/^[\s\S]*["']/, ''))
+                .filter(u => u.indexOf('https://wa.me/') !== 0);
+            const refCss = html.match(/url\(\s*["']?https?:[^)]+\)/gi) || [];
+            const externalCount = refAttrs.length + refCss.length;
 
             const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
             const link = document.createElement('a');
@@ -1876,9 +1932,10 @@ ${headResources}
 
             const sizeMB = (blob.size / 1048576).toFixed(2);
             const savedKB = Math.round(fyLogoSaved / 1024);
-            alert(selfContained
-                ? 'تم تصدير ملف الباقات بنجاح ✅\n\nالوضع: مستقل تماماً (بدون أي تحميل خارجي)\nالحجم: ' + sizeMB + ' ميجابايت' + (savedKB > 40 ? '\nتم تخفيف الشعار: ' + savedKB + ' كيلوبايت' : '')
-                : 'تم تصدير ملف الباقات ✅\n\nتنبيه: تعذّر تجهيز التصميم داخلياً (تأكد من اتصال الاستوديو بالإنترنت ثم أعد التصدير للحصول على أسرع نسخة).\nالحجم: ' + sizeMB + ' ميجابايت');
+            const ready = selfContained && embeddedFonts && externalCount === 0;
+            alert(ready
+                ? 'تم تصدير ملف الباقات بنجاح ✅\n\nالوضع: مستقل تماماً\nطلبات خارجية عند الفتح: 0 (تصميم وأيقونات وخطوط مدمجة)\nيعمل بكامل سرعته حتى بدون إنترنت\nالحجم: ' + sizeMB + ' ميجابايت' + (savedKB > 40 ? '\nتم تخفيف الشعار: ' + savedKB + ' كيلوبايت' : '')
+                : 'تم تصدير ملف الباقات ✅\n\nتنبيه: لم يكتمل التجهيز الداخلي' + (embeddedFonts ? '' : ' (الخطوط)') + (selfContained ? '' : ' (التصميم)') + '.\nتأكد من اتصال الاستوديو بالإنترنت ثم أعد التصدير للحصول على أسرع نسخة.\nطلبات خارجية متبقية: ' + externalCount + '\nالحجم: ' + sizeMB + ' ميجابايت');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
