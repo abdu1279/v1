@@ -1582,34 +1582,29 @@
             return css;
         }
 
-        // يحمّل ملفات الخطوط مرة واحدة هنا ويدمجها داخل الملف المُصدَّر،
-        // فيعمل لدى العميل بخطوطه الصحيحة حتى بلا إنترنت. وإن تعذّر ذلك
-        // يعود تلقائياً لرابط الخطوط المعتاد دون أي تعطيل.
-        async function fyInlineFonts(href) {
+        // الشعار المرفوع قد يكون بأبعاد ضخمة جداً؛ تصغيره لأبعاد العرض الفعلية
+        // (بثلاثة أضعاف الدقة لشاشات الجوال) يقلّص حجم الملف كثيراً دون أي فرق مرئي.
+        async function fyOptimizeLogo(src) {
             try {
-                const cssRes = await fetch(href);
-                if (!cssRes.ok) return '';
-                let css = await cssRes.text();
-                const found = css.match(/url\((https?:[^)]+)\)/g) || [];
-                const urls = [];
-                found.forEach(u => { const clean = u.slice(4, -1).replace(/^['"]|['"]$/g, ''); if (urls.indexOf(clean) === -1) urls.push(clean); });
-                if (!urls.length) return '';
-                let total = 0;
-                const pairs = [];
-                for (const u of urls) {
-                    const r = await fetch(u);
-                    if (!r.ok) return '';
-                    const buf = await r.arrayBuffer();
-                    total += buf.byteLength;
-                    if (total > 1600000) return '';
-                    const bytes = new Uint8Array(buf);
-                    let bin = '';
-                    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
-                    pairs.push([u, 'data:font/woff2;base64,' + btoa(bin)]);
-                }
-                pairs.forEach(p => { css = css.split(p[0]).join(p[1]); });
-                return css;
-            } catch (e) { return ''; }
+                if (!src || src.slice(0, 11) !== 'data:image/') return src;
+                if (src.length < 90000) return src;
+                const img = new Image();
+                await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = src; });
+                const zoom = (state.logo.boardZoom || 100) / 100;
+                const maxW = Math.min(1600, Math.ceil((state.logo.boardFrameW || 220) * 0.82 * zoom * 3));
+                const maxH = Math.min(1600, Math.ceil((state.logo.boardFrameH || 110) * 0.82 * zoom * 3));
+                const scale = Math.min(1, maxW / img.naturalWidth, maxH / img.naturalHeight);
+                if (!(scale < 0.95) || !img.naturalWidth) return src;
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+                canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                let out = canvas.toDataURL('image/webp', 0.94);
+                if (out.slice(0, 15) !== 'data:image/webp') out = canvas.toDataURL('image/png');
+                return (out && out.length < src.length * 0.9) ? out : src;
+            } catch (e) { return src; }
         }
 
         // يحوّل كل أيقونة مستخدمة إلى SVG جاهز يُخزَّن داخل الملف المُصدَّر.
@@ -1633,12 +1628,29 @@
             return map;
         }
 
+        // غلاف يضمن استرجاع شعار الاستوديو الأصلي مهما حدث أثناء التصدير.
         async function exportHTML() {
+            const keepLogo = state.logo.src;
+            const keepType = state.compass.selectedType;
+            try { await fyBuildExportFile(); }
+            finally {
+                state.logo.src = keepLogo;
+                state.compass.selectedType = keepType;
+                const leftover = document.getElementById('fy-export-stage');
+                if (leftover) leftover.remove();
+            }
+        }
+
+        async function fyBuildExportFile() {
             document.getElementById('text-toolbar').style.display = 'none';
 
             // (1) تجهيز كل الحالات التي قد يصل إليها العميل داخل مسرح مخفي،
             //     حتى يُصرّف محرك Tailwind تنسيقات كل الأصناف المستخدمة فيها.
             const fyTheme = getThemeEngine(state.theme, false);
+            const fyOriginalLogo = state.logo.src;
+            const fyLightLogo = await fyOptimizeLogo(fyOriginalLogo);
+            state.logo.src = fyLightLogo;
+            const fyLogoSaved = fyOriginalLogo ? (fyOriginalLogo.length - fyLightLogo.length) : 0;
             const fyOriginalType = state.compass.selectedType;
             const fyVariants = [];
             ['villa', 'apartment', 'building', 'large', 'other'].forEach(t => {
@@ -1676,15 +1688,6 @@
             const selfContained = compiledCss.length > 20000 && Object.keys(iconMap).length > 0;
             const fontsHref = 'https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Readex+Pro:wght@500;700;800&display=swap';
             const iconMapJson = JSON.stringify(iconMap).replace(/<\//g, '<\\/');
-            const fontCss = await fyInlineFonts(fontsHref);
-            const fontResources = fontCss
-                ? '    <style>' + fontCss + '</style>'
-                : [
-                    '    <link rel="preconnect" href="https://fonts.googleapis.com">',
-                    '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
-                    '    <link rel="stylesheet" href="' + fontsHref + '" media="print" onload="this.media=\'all\'">',
-                    '    <noscript><link rel="stylesheet" href="' + fontsHref + '"></noscript>'
-                  ].join('\n');
             const headResources = selfContained
                 ? '    <style>' + compiledCss + '</style>'
                 : [
@@ -1703,8 +1706,9 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${state.header.title} - FRAMEIYM Studio</title>
-${fontResources}
-${headResources}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="${fontsHref}" rel="stylesheet">
     <style>
         body{font-family:'Alexandria',sans-serif;} 
         h1,h2,h3,h4,.font-readex{font-family:'"Readex Pro"',sans-serif;} 
@@ -1758,6 +1762,7 @@ ${headResources}
         .min-w-0 { min-width: 0; }
         .text-right { text-align: right !important; }
     </style>
+${headResources}
 </head>
 <body class="${getThemeEngine(state.theme, false).container} min-h-screen text-right flex flex-col antialiased" style="${getThemeEngine(state.theme, false).extraBgStyle}">
     
@@ -1863,9 +1868,17 @@ ${headResources}
     <\/script>
 </body></html>`;
 
+            state.logo.src = fyOriginalLogo;
+
             const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob); link.download = `FRAMEIYM_CustomPricing_${Date.now()}.html`; link.click();
+
+            const sizeMB = (blob.size / 1048576).toFixed(2);
+            const savedKB = Math.round(fyLogoSaved / 1024);
+            alert(selfContained
+                ? 'تم تصدير ملف الباقات بنجاح ✅\n\nالوضع: مستقل تماماً (بدون أي تحميل خارجي)\nالحجم: ' + sizeMB + ' ميجابايت' + (savedKB > 40 ? '\nتم تخفيف الشعار: ' + savedKB + ' كيلوبايت' : '')
+                : 'تم تصدير ملف الباقات ✅\n\nتنبيه: تعذّر تجهيز التصميم داخلياً (تأكد من اتصال الاستوديو بالإنترنت ثم أعد التصدير للحصول على أسرع نسخة).\nالحجم: ' + sizeMB + ' ميجابايت');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
