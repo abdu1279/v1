@@ -1520,34 +1520,191 @@
             return headerHTML + pkgsHtml + footerHTML;
         }
 
-        function exportHTML() {
+        function buildClientBodyHTML() {
+            const theme = getThemeEngine(state.theme, false);
+
+            let logoBoardHtml = '';
+            if (state.logo.src && state.logo.showInBoard) {
+                const alignFlex = getAlign(state.logo.boardAlign); const zoom = (state.logo.boardZoom || 100) / 100;
+                logoBoardHtml = '<div class="w-full flex" style="justify-content: '+alignFlex+'; margin-bottom: '+state.logo.boardSpace+'px;"><div class="logo-frame" style="width: '+state.logo.boardFrameW+'px; height: '+state.logo.boardFrameH+'px; border-radius: '+state.logo.boardRadius+'px; background: '+theme.logoFrameBg+'; border: '+theme.logoFrameBorder+'; box-shadow: 0 15px 35px -10px rgba(0,0,0,0.25);"><img src="'+state.logo.src+'" style="max-width: 82%; max-height: 82%; object-fit: contain; transform: scale('+zoom+');"></div></div>';
+            }
+
+            const headerAlign = state.logo.boardAlign === 'right' ? 'text-right items-start' : state.logo.boardAlign === 'left' ? 'text-left items-end' : 'text-center items-center';
+            const titleHtml = (state.header.title.trim() && !isHidden('headerTitle')) ? '<h1 class="font-readex font-extrabold text-5xl md:text-6xl lg:text-7xl tracking-tight w-full mb-4 break-words min-w-0 '+theme.headerText+' '+getElClass('headerTitle')+'" '+getElStyle('headerTitle')+'>'+state.header.title+'</h1>' : '';
+            const subTitleHtml = (state.header.subtitle.trim() && !isHidden('headerSubtitle')) ? '<h2 class="font-alexandria text-xl md:text-2xl opacity-70 font-medium leading-relaxed max-w-3xl w-full break-words min-w-0 '+theme.headerText+' '+getElClass('headerSubtitle')+'" '+getElStyle('headerSubtitle')+'>'+state.header.subtitle+'</h2>' : '';
+            const headerHTML = '<div class="w-full '+theme.grid+' mb-12 flex flex-col '+headerAlign+' relative z-10">' + logoBoardHtml + titleHtml + subTitleHtml + '</div>';
+            const compassHTML = generateCompassHTML(true);
+
+            let mainContentHTML = '';
+            if (['villa', 'apartment', 'building'].includes(state.compass.selectedType)) {
+                mainContentHTML = '<div class="w-full '+theme.grid+' grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-24 relative z-10">' + (state.packages[state.compass.selectedType] || []).map(p => generatePackage(p, false)).join('') + '</div>';
+            } else {
+                mainContentHTML = generateCustomProjectForm(state.compass.selectedType, theme);
+            }
+
+            let promoHTML = '';
+            if (state.promo.enabled && (state.promo.title.trim() || state.promo.text.trim()) && !isHidden('promoTitle') && !isHidden('promoText')) {
+                const p = theme.promo;
+                promoHTML = '<div class="w-full '+theme.grid+' mb-20 relative z-10"><div class="absolute -top-5 right-8 md:right-12 '+p.ribbon+' px-8 py-3 rounded-full font-readex font-bold text-sm transform -rotate-3 z-20 flex items-center gap-2"><i data-lucide="gift" class="w-4 h-4"></i> فرصة مميزة</div><div class="'+p.bg+' '+p.border+' rounded-[3rem] p-12 md:p-20 text-right '+p.text+' flex flex-col md:flex-row gap-12 items-center justify-between relative overflow-hidden"><div class="flex-1 relative z-10 flex flex-col gap-6 items-start"><h3 class="font-readex font-extrabold text-3xl md:text-4xl flex items-center gap-4 break-words min-w-0 '+getElClass('promoTitle')+'" '+getElStyle('promoTitle')+'><i data-lucide="gem" class="w-10 h-10 shrink-0 '+p.icon+'"></i> <span>'+state.promo.title+'</span></h3><div class="h-1.5 w-24 '+p.highlight+'/50 rounded-full"></div><p class="font-alexandria text-xl md:text-2xl leading-[1.8] opacity-90 font-medium break-words min-w-0 w-full text-right '+getElClass('promoText')+'" '+getElStyle('promoText')+'>'+state.promo.text.replace(/\n/g, '<br>')+'</p><a href="https://wa.me/'+state.whatsapp.replace(/\+/g,'')+'?text='+encodeURIComponent(state.promo.waText||'')+'" target="_blank" class="inline-flex items-center gap-3 font-readex font-bold text-base py-3.5 px-8 rounded-full '+p.highlight+' text-white shadow-lg hover:opacity-90 transition-all '+getElClass('promoCta')+'"><i data-lucide="message-circle" class="w-5 h-5"></i> <span>'+state.promo.ctaText+'</span></a></div><div class="hidden lg:flex shrink-0 w-48 h-48 rounded-full border-4 border-current/10 items-center justify-center relative z-10 shadow-inner bg-current/5 backdrop-blur-sm"><i data-lucide="award" class="w-24 h-24 '+p.icon+' opacity-90"></i></div></div></div>';
+            }
+
+            const footerHTML = '<div class="w-full '+theme.grid+' mt-auto text-center pt-12 border-t border-current/10 '+theme.headerText+' flex flex-col items-center gap-8 relative z-10">' + (state.footer.text.trim() && !isHidden('footerText') ? '<p class="font-alexandria text-lg opacity-70 font-medium max-w-2xl mx-auto leading-relaxed break-words min-w-0 '+getElClass('footerText')+'" '+getElStyle('footerText')+'>'+state.footer.text+'</p>' : '') + (state.footer.ctaText.trim() && !isHidden('footerCta') ? '<a href="https://wa.me/'+state.whatsapp.replace(/\+/g,'')+'?text='+encodeURIComponent(state.footer.waText||'')+'" target="_blank" class="bg-[#25D366] text-white font-readex font-bold py-5 px-14 rounded-full hover:bg-[#128C7E] transition-all hover:scale-105 inline-flex items-center justify-center gap-3 text-2xl shadow-[0_15px_30px_rgba(37,211,102,0.3)] '+getElClass('footerCta')+'"><i data-lucide="message-circle" class="w-8 h-8 shrink-0"></i> <span '+getElStyle('footerCta')+'>'+state.footer.ctaText+'</span></a>' : '') + '</div>';
+
+            return headerHTML + compassHTML + mainContentHTML + promoHTML + footerHTML;
+        }
+
+        function buildNeighborhoodListHTML(filterText) {
+            const term = String(filterText || '').trim().toLowerCase(); const filtered = RIYADH_NEIGHBORHOODS.filter(n => !term || n.name.toLowerCase().includes(term));
+            if (filtered.length === 0) return '<div class="p-3 text-xs opacity-60 text-center">لا يوجد حي بهذا الاسم</div>';
+            return filtered.map(n => {
+                const sec = RIYADH_SECTORS[n.sector]; const isSel = (state.compass.neighborhood === n.name);
+                return '<div onclick="selectNeighborhood(\''+n.name+'\', '+n.sector+')" class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-fieldAccent/20 transition-colors '+(isSel?'bg-fieldAccent/30 font-bold':'')+'"><span class="text-xs font-readex flex items-center gap-2"><i data-lucide=\"map-pin\" class=\"w-3.5 h-3.5 text-fieldAccent\"></i> '+n.name+'</span><span class="text-[10px] opacity-60 bg-white/5 px-2 py-0.5 rounded-md">'+sec.name.split('(')[0]+'</span></div>';
+            }).join('');
+        }
+
+        // يقرأ ورقة الأنماط التي ولّدها محرك Tailwind داخل الاستوديو ليُدمج
+        // ناتجها الجاهز في ملف العميل، فلا يحتاج جهازه لبنائها من جديد.
+        function fyHarvestTailwindCss() {
+            let css = '';
+            Array.from(document.querySelectorAll('style')).forEach(s => {
+                let text = s.textContent || '';
+                if (!text && s.sheet) { try { text = Array.from(s.sheet.cssRules).map(r => r.cssText).join('\n'); } catch (e) {} }
+                if (text.indexOf('--tw-') !== -1) css += text + '\n';
+            });
+            if (!css) {
+                Array.from(document.styleSheets).forEach(sheet => {
+                    try {
+                        const text = Array.from(sheet.cssRules).map(r => r.cssText).join('\n');
+                        if (text.indexOf('--tw-') !== -1) css += text + '\n';
+                    } catch (e) {}
+                });
+            }
+            return css;
+        }
+
+        // يحمّل ملفات الخطوط مرة واحدة هنا ويدمجها داخل الملف المُصدَّر،
+        // فيعمل لدى العميل بخطوطه الصحيحة حتى بلا إنترنت. وإن تعذّر ذلك
+        // يعود تلقائياً لرابط الخطوط المعتاد دون أي تعطيل.
+        async function fyInlineFonts(href) {
+            try {
+                const cssRes = await fetch(href);
+                if (!cssRes.ok) return '';
+                let css = await cssRes.text();
+                const found = css.match(/url\((https?:[^)]+)\)/g) || [];
+                const urls = [];
+                found.forEach(u => { const clean = u.slice(4, -1).replace(/^['"]|['"]$/g, ''); if (urls.indexOf(clean) === -1) urls.push(clean); });
+                if (!urls.length) return '';
+                let total = 0;
+                const pairs = [];
+                for (const u of urls) {
+                    const r = await fetch(u);
+                    if (!r.ok) return '';
+                    const buf = await r.arrayBuffer();
+                    total += buf.byteLength;
+                    if (total > 1600000) return '';
+                    const bytes = new Uint8Array(buf);
+                    let bin = '';
+                    for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+                    pairs.push([u, 'data:font/woff2;base64,' + btoa(bin)]);
+                }
+                pairs.forEach(p => { css = css.split(p[0]).join(p[1]); });
+                return css;
+            } catch (e) { return ''; }
+        }
+
+        // يحوّل كل أيقونة مستخدمة إلى SVG جاهز يُخزَّن داخل الملف المُصدَّر.
+        function fyBuildIconMap(html) {
+            const map = {};
+            if (!window.lucide || typeof lucide.createIcons !== 'function') return map;
+            const names = [];
+            const re = /data-lucide="([^"]+)"/g;
+            let m;
+            while ((m = re.exec(html)) !== null) { if (names.indexOf(m[1]) === -1) names.push(m[1]); }
+            const holder = document.createElement('div');
+            holder.style.cssText = 'position:absolute;top:0;left:-99999px;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none;';
+            document.body.appendChild(holder);
+            names.forEach(name => {
+                holder.innerHTML = '<i data-lucide="' + name + '"></i>';
+                try { lucide.createIcons({ root: holder }); } catch (e) {}
+                const svg = holder.querySelector('svg');
+                if (svg) { svg.removeAttribute('data-lucide'); map[name] = svg.outerHTML; }
+            });
+            holder.remove();
+            return map;
+        }
+
+        async function exportHTML() {
             document.getElementById('text-toolbar').style.display = 'none';
+
+            // (1) تجهيز كل الحالات التي قد يصل إليها العميل داخل مسرح مخفي،
+            //     حتى يُصرّف محرك Tailwind تنسيقات كل الأصناف المستخدمة فيها.
+            const fyTheme = getThemeEngine(state.theme, false);
+            const fyOriginalType = state.compass.selectedType;
+            const fyVariants = [];
+            ['villa', 'apartment', 'building', 'large', 'other'].forEach(t => {
+                state.compass.selectedType = t;
+                try { fyVariants.push(buildClientBodyHTML()); } catch (e) {}
+            });
+            state.compass.selectedType = fyOriginalType;
+
+            const fyListHtml = buildNeighborhoodListHTML('');
+            const fyStage = document.createElement('div');
+            fyStage.id = 'fy-export-stage';
+            fyStage.setAttribute('aria-hidden', 'true');
+            fyStage.style.cssText = 'position:absolute;top:0;left:-99999px;width:1440px;height:0;overflow:hidden;opacity:0;pointer-events:none;';
+            fyStage.innerHTML = '<div class="' + fyTheme.container + ' min-h-screen text-right flex flex-col antialiased"></div>'
+                + '<div class="container mx-auto px-4 py-16 max-w-7xl flex-1 flex flex-col justify-center items-center"></div>'
+                + fyVariants.join('') + fyListHtml
+                + '<div class="p-3 text-xs opacity-60 text-center">لا يوجد حي بهذا الاسم</div>';
+            document.body.appendChild(fyStage);
+
+            // (2) الانتظار حتى يتوقف حجم التنسيقات عن النمو (أي اكتمال التصريف
+            //     فعلياً مهما كان الجهاز بطيئاً) بدل الاعتماد على مهلة ثابتة.
+            let compiledCss = '';
+            let lastLen = -1;
+            for (let attempt = 0; attempt < 40; attempt++) {
+                await new Promise(r => requestAnimationFrame(() => setTimeout(r, 100)));
+                compiledCss = fyHarvestTailwindCss();
+                if (compiledCss.length > 0 && compiledCss.length === lastLen) break;
+                lastLen = compiledCss.length;
+            }
+            const iconMap = fyBuildIconMap(fyVariants.join('') + fyListHtml);
+            fyStage.remove();
+
+            // (3) الوضع المستقل: كل شيء مدمج. وإن تعذّر (كأن يكون الاستوديو
+            //     نفسه بلا إنترنت) يعود التصدير للطريقة السابقة سليماً دون أي خلل.
+            const selfContained = compiledCss.length > 20000 && Object.keys(iconMap).length > 0;
+            const fontsHref = 'https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Readex+Pro:wght@500;700;800&display=swap';
+            const iconMapJson = JSON.stringify(iconMap).replace(/<\//g, '<\\/');
+            const fontCss = await fyInlineFonts(fontsHref);
+            const fontResources = fontCss
+                ? '    <style>' + fontCss + '</style>'
+                : [
+                    '    <link rel="preconnect" href="https://fonts.googleapis.com">',
+                    '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+                    '    <link rel="stylesheet" href="' + fontsHref + '" media="print" onload="this.media=\'all\'">',
+                    '    <noscript><link rel="stylesheet" href="' + fontsHref + '"></noscript>'
+                  ].join('\n');
+            const headResources = selfContained
+                ? '    <style>' + compiledCss + '</style>'
+                : [
+                    '    <link rel="preconnect" href="https://cdn.tailwindcss.com">',
+                    '    <link rel="preconnect" href="https://unpkg.com">',
+                    '    <script id="fy-tw-cdn" src="https://cdn.tailwindcss.com" defer><\/script>',
+                    '    <script>function fyTwDone(){ if(window.tailwind){ tailwind.config={theme:{extend:{colors:{fieldBg:\'#101220\',fieldCard:\'#1a1c2e\',fieldBorder:\'#2a2d45\',fieldAccent:\'#8b7bf7\',frameiymNavy:\'#1D3558\',frameiymOrange:\'#F89D53\',frameiymGold:\'#FCE2AB\'},fontFamily:{readex:[\'"Readex Pro"\',\'sans-serif\'],alexandria:[\'Alexandria\',\'sans-serif\']}}}}; } if(window.__fyOnTwReady) window.__fyOnTwReady(); }',
+                    '    document.getElementById(\'fy-tw-cdn\').addEventListener(\'load\', fyTwDone);',
+                    '    document.getElementById(\'fy-tw-cdn\').addEventListener(\'error\', fyTwDone);<\/script>',
+                    '    <script id="fy-lucide-cdn" src="https://unpkg.com/lucide@latest" defer><\/script>',
+                    '    <script>function fyLuDone(){ if(window.createIconsLocal) createIconsLocal(document); }',
+                    '    document.getElementById(\'fy-lucide-cdn\').addEventListener(\'load\', fyLuDone);<\/script>'
+                  ].join('\n');
             const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${state.header.title} - FRAMEIYM Studio</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    <link rel="preconnect" href="https://unpkg.com">
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=Readex+Pro:wght@500;700;800&display=swap" rel="stylesheet">
-    <script id="fy-tw-cdn" src="https://cdn.tailwindcss.com" defer><\/script>
-    <script>
-        // التصميم (Tailwind) هو المعتمد عليه لإظهار محتوى منسّق بصرياً؛ بمجرد
-        // جاهزيته (نجاحاً أو فشلاً) تُخفى شاشة التحميل فوراً دون انتظار أي شيء آخر.
-        function fyTwDone(){ if(window.tailwind){ tailwind.config={theme:{extend:{colors:{fieldBg:'#101220',fieldCard:'#1a1c2e',fieldBorder:'#2a2d45',fieldAccent:'#8b7bf7',frameiymNavy:'#1D3558',frameiymOrange:'#F89D53',frameiymGold:'#FCE2AB'},fontFamily:{readex:['"Readex Pro"','sans-serif'],alexandria:['Alexandria','sans-serif']}}}}; } if(window.__fyOnTwReady) window.__fyOnTwReady(); }
-        document.getElementById('fy-tw-cdn').addEventListener('load', fyTwDone);
-        document.getElementById('fy-tw-cdn').addEventListener('error', fyTwDone);
-    <\/script>
-    <script id="fy-lucide-cdn" src="https://unpkg.com/lucide@latest" defer><\/script>
-    <script>
-        // الأيقونات عنصر تجميلي فقط: لا تُعطَّل ظهور الباقات؛ إن وصلت لاحقاً
-        // تُستكمل تلقائياً في مكانها دون أي أثر على سرعة أو صحة عرض المحتوى.
-        function fyLuDone(){ if(window.lucide && typeof window.lucide.createIcons==='function'){ try{ window.lucide.createIcons(); }catch(e){} } }
-        document.getElementById('fy-lucide-cdn').addEventListener('load', fyLuDone);
-        document.getElementById('fy-lucide-cdn').addEventListener('error', fyLuDone);
-    <\/script>
+${fontResources}
+${headResources}
     <style>
         body{font-family:'Alexandria',sans-serif;} 
         h1,h2,h3,h4,.font-readex{font-family:'"Readex Pro"',sans-serif;} 
@@ -1583,7 +1740,7 @@
         }
         
         /* واجهة التحميل الاحترافية */
-        #client-loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1c2e 0%, #101220 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999999; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s; }
+        #client-loader { position: fixed; top:0; left:0; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1c2e 0%, #101220 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999999; transition: opacity 0.35s ease, visibility 0.35s; }
         .loader-logo-wrap { position: relative; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
         .loader-ring { position: absolute; inset: 0; border: 3px solid rgba(139,123,247,0.1); border-top-color: #8b7bf7; border-bottom-color: #F89D53; border-radius: 50%; animation: spin-ring 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite; }
         .loader-core { width: 60px; height: 60px; background: rgba(139,123,247,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse-core 2s ease-in-out infinite; border: 1px solid rgba(139,123,247,0.3); }
@@ -1623,6 +1780,7 @@
         const RIYADH_NEIGHBORHOODS = ${JSON.stringify(RIYADH_NEIGHBORHOODS)};
         const RIYADH_SECTORS = ${JSON.stringify(RIYADH_SECTORS)};
         const THEME_DEFS = ${JSON.stringify(THEME_DEFS)};
+        const FY_ICONS = ${iconMapJson};
         
         ${getThemeEngine.toString()}
         ${getAlign.toString()}
@@ -1638,40 +1796,13 @@
         ${generatePackage.toString()}
         ${generateCustomProjectForm.toString()}
         ${sendCustomProjectWa.toString()}
+        ${buildClientBodyHTML.toString()}
+        ${buildNeighborhoodListHTML.toString()}
 
         function renderClientUI() {
             const container = document.getElementById('client-app');
-            const theme = getThemeEngine(state.theme, false);
-
-            let logoBoardHtml = '';
-            if (state.logo.src && state.logo.showInBoard) {
-                const alignFlex = getAlign(state.logo.boardAlign); const zoom = (state.logo.boardZoom || 100) / 100;
-                logoBoardHtml = '<div class="w-full flex" style="justify-content: '+alignFlex+'; margin-bottom: '+state.logo.boardSpace+'px;"><div class="logo-frame" style="width: '+state.logo.boardFrameW+'px; height: '+state.logo.boardFrameH+'px; border-radius: '+state.logo.boardRadius+'px; background: '+theme.logoFrameBg+'; border: '+theme.logoFrameBorder+'; box-shadow: 0 15px 35px -10px rgba(0,0,0,0.25);"><img src="'+state.logo.src+'" style="max-width: 82%; max-height: 82%; object-fit: contain; transform: scale('+zoom+');"></div></div>';
-            }
-
-            const headerAlign = state.logo.boardAlign === 'right' ? 'text-right items-start' : state.logo.boardAlign === 'left' ? 'text-left items-end' : 'text-center items-center';
-            const titleHtml = (state.header.title.trim() && !isHidden('headerTitle')) ? '<h1 class="font-readex font-extrabold text-5xl md:text-6xl lg:text-7xl tracking-tight w-full mb-4 break-words min-w-0 '+theme.headerText+' '+getElClass('headerTitle')+'" '+getElStyle('headerTitle')+'>'+state.header.title+'</h1>' : '';
-            const subTitleHtml = (state.header.subtitle.trim() && !isHidden('headerSubtitle')) ? '<h2 class="font-alexandria text-xl md:text-2xl opacity-70 font-medium leading-relaxed max-w-3xl w-full break-words min-w-0 '+theme.headerText+' '+getElClass('headerSubtitle')+'" '+getElStyle('headerSubtitle')+'>'+state.header.subtitle+'</h2>' : '';
-            const headerHTML = '<div class="w-full '+theme.grid+' mb-12 flex flex-col '+headerAlign+' relative z-10">' + logoBoardHtml + titleHtml + subTitleHtml + '</div>';
-            const compassHTML = generateCompassHTML(true);
-
-            let mainContentHTML = '';
-            if (['villa', 'apartment', 'building'].includes(state.compass.selectedType)) {
-                mainContentHTML = '<div class="w-full '+theme.grid+' grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch mb-24 relative z-10">' + (state.packages[state.compass.selectedType] || []).map(p => generatePackage(p, false)).join('') + '</div>';
-            } else {
-                mainContentHTML = generateCustomProjectForm(state.compass.selectedType, theme);
-            }
-
-            let promoHTML = '';
-            if (state.promo.enabled && (state.promo.title.trim() || state.promo.text.trim()) && !isHidden('promoTitle') && !isHidden('promoText')) {
-                const p = theme.promo;
-                promoHTML = '<div class="w-full '+theme.grid+' mb-20 relative z-10"><div class="absolute -top-5 right-8 md:right-12 '+p.ribbon+' px-8 py-3 rounded-full font-readex font-bold text-sm transform -rotate-3 z-20 flex items-center gap-2"><i data-lucide="gift" class="w-4 h-4"></i> فرصة مميزة</div><div class="'+p.bg+' '+p.border+' rounded-[3rem] p-12 md:p-20 text-right '+p.text+' flex flex-col md:flex-row gap-12 items-center justify-between relative overflow-hidden"><div class="flex-1 relative z-10 flex flex-col gap-6 items-start"><h3 class="font-readex font-extrabold text-3xl md:text-4xl flex items-center gap-4 break-words min-w-0 '+getElClass('promoTitle')+'" '+getElStyle('promoTitle')+'><i data-lucide="gem" class="w-10 h-10 shrink-0 '+p.icon+'"></i> <span>'+state.promo.title+'</span></h3><div class="h-1.5 w-24 '+p.highlight+'/50 rounded-full"></div><p class="font-alexandria text-xl md:text-2xl leading-[1.8] opacity-90 font-medium break-words min-w-0 w-full text-right '+getElClass('promoText')+'" '+getElStyle('promoText')+'>'+state.promo.text.replace(/\\n/g, '<br>')+'</p><a href="https://wa.me/'+state.whatsapp.replace(/\\+/g,'')+'?text='+encodeURIComponent(state.promo.waText||'')+'" target="_blank" class="inline-flex items-center gap-3 font-readex font-bold text-base py-3.5 px-8 rounded-full '+p.highlight+' text-white shadow-lg hover:opacity-90 transition-all '+getElClass('promoCta')+'"><i data-lucide="message-circle" class="w-5 h-5"></i> <span>'+state.promo.ctaText+'</span></a></div><div class="hidden lg:flex shrink-0 w-48 h-48 rounded-full border-4 border-current/10 items-center justify-center relative z-10 shadow-inner bg-current/5 backdrop-blur-sm"><i data-lucide="award" class="w-24 h-24 '+p.icon+' opacity-90"></i></div></div></div>';
-            }
-
-            const footerHTML = '<div class="w-full '+theme.grid+' mt-auto text-center pt-12 border-t border-current/10 '+theme.headerText+' flex flex-col items-center gap-8 relative z-10">' + (state.footer.text.trim() && !isHidden('footerText') ? '<p class="font-alexandria text-lg opacity-70 font-medium max-w-2xl mx-auto leading-relaxed break-words min-w-0 '+getElClass('footerText')+'" '+getElStyle('footerText')+'>'+state.footer.text+'</p>' : '') + (state.footer.ctaText.trim() && !isHidden('footerCta') ? '<a href="https://wa.me/'+state.whatsapp.replace(/\\+/g,'')+'?text='+encodeURIComponent(state.footer.waText||'')+'" target="_blank" class="bg-[#25D366] text-white font-readex font-bold py-5 px-14 rounded-full hover:bg-[#128C7E] transition-all hover:scale-105 inline-flex items-center justify-center gap-3 text-2xl shadow-[0_15px_30px_rgba(37,211,102,0.3)] '+getElClass('footerCta')+'"><i data-lucide="message-circle" class="w-8 h-8 shrink-0"></i> <span '+getElStyle('footerCta')+'>'+state.footer.ctaText+'</span></a>' : '') + '</div>';
-
-            container.innerHTML = headerHTML + compassHTML + mainContentHTML + promoHTML + footerHTML;
-            safeCreateIcons(); populateNeighborhoodDropdown();
+            container.innerHTML = buildClientBodyHTML();
+            createIconsLocal(container); populateNeighborhoodDropdown();
         }
 
         function setCompassType(t) { state.compass.selectedType = t; renderClientUI(); }
@@ -1681,21 +1812,34 @@
         function selectNeighborhood(name, sector) { state.compass.neighborhood = name; state.compass.sector = sector; const input = document.getElementById('neighborhood-search-input'); if (input) input.value = name; hideNeighborhoodDropdown(); renderClientUI(); }
         function populateNeighborhoodDropdown(filterText = '') {
             const list = document.getElementById('neighborhood-dropdown-list'); if (!list) return;
-            const term = filterText.trim().toLowerCase(); const filtered = RIYADH_NEIGHBORHOODS.filter(n => !term || n.name.toLowerCase().includes(term));
-            if (filtered.length === 0) { list.innerHTML = '<div class="p-3 text-xs opacity-60 text-center">لا يوجد حي بهذا الاسم</div>'; return; }
-            list.innerHTML = filtered.map(n => {
-                const sec = RIYADH_SECTORS[n.sector]; const isSel = (state.compass.neighborhood === n.name);
-                return '<div onclick="selectNeighborhood(\\''+n.name+'\\', '+n.sector+')" class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-fieldAccent/20 transition-colors '+(isSel?'bg-fieldAccent/30 font-bold':'')+'"><span class="text-xs font-readex flex items-center gap-2"><i data-lucide=\\"map-pin\\" class=\\"w-3.5 h-3.5 text-fieldAccent\\"></i> '+n.name+'</span><span class="text-[10px] opacity-60 bg-white/5 px-2 py-0.5 rounded-md">'+sec.name.split('(')[0]+'</span></div>';
-            }).join('');
-            safeCreateIcons(list);
+            list.innerHTML = buildNeighborhoodListHTML(filterText);
+            createIconsLocal(list);
         }
         function filterNeighborhoods(val) { showNeighborhoodDropdown(); populateNeighborhoodDropdown(val); }
 
-        function safeCreateIcons(root) {
-            if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        // الأيقونات مُدمجة داخل الملف كـ SVG جاهز، فتظهر فوراً بلا أي تحميل.
+        function createIconsLocal(root) {
+            const scope = root || document;
+            Array.from(scope.querySelectorAll('[data-lucide]')).forEach(el => {
+                const raw = FY_ICONS[el.getAttribute('data-lucide')];
+                if (!raw) return;
+                const tpl = document.createElement('template');
+                tpl.innerHTML = raw.trim();
+                const svg = tpl.content.firstElementChild;
+                if (!svg) return;
+                Array.from(el.attributes).forEach(a => {
+                    if (a.name === 'data-lucide') return;
+                    if (a.name === 'class') svg.setAttribute('class', ((svg.getAttribute('class') || '') + ' ' + a.value).trim());
+                    else svg.setAttribute(a.name, a.value);
+                });
+                svg.removeAttribute('data-lucide');
+                el.replaceWith(svg);
+            });
+            if (scope.querySelector('[data-lucide]') && window.lucide && typeof window.lucide.createIcons === 'function') {
                 try { window.lucide.createIcons(root ? { root: root } : undefined); } catch (e) {}
             }
         }
+        window.createIconsLocal = createIconsLocal;
 
         let loaderHidden = false;
         function hideLoader() {
@@ -1705,18 +1849,17 @@
             if(loader) {
                 loader.style.opacity = '0';
                 loader.style.visibility = 'hidden';
-                setTimeout(() => loader.remove(), 800);
+                setTimeout(() => loader.remove(), 400);
             }
         }
 
-        // تُبنى الباقات فوراً دون أي انتظار — لا لتحميل Tailwind ولا الأيقونات.
-        // شاشة التحميل تُخفى بمجرد اكتمال التصميم فعلياً (عنصر العرض الوحيد
-        // المؤثر على شكل المحتوى)، بدل الانتظار الثابت المُصطنع القديم.
-        window.__fyOnTwReady = function () { setTimeout(hideLoader, 150); };
-
+        // التصميم والأيقونات مدمجان داخل هذا الملف، فلا انتظار لأي مورد خارجي:
+        // تُبنى الباقات فور قراءة الصفحة وتُرفع شاشة التحميل في أول إطار عرض.
         renderClientUI();
-        setTimeout(hideLoader, 4000); // سقف أمان مطلق في حال تعذر وصول التصميم الخارجي
-        window.addEventListener('load', () => setTimeout(hideLoader, 150));
+        requestAnimationFrame(() => requestAnimationFrame(hideLoader));
+        window.__fyOnTwReady = function () { hideLoader(); };
+        setTimeout(hideLoader, 2500);
+        window.addEventListener('load', () => hideLoader());
     <\/script>
 </body></html>`;
 
